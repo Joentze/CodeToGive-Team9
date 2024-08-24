@@ -1,6 +1,6 @@
 import { Box, Button, IconButton, Typography, useTheme } from "@mui/material";
 import { tokens } from "../../theme";
-import { mockFoodDonations } from "../../data/mockData";
+import { mockFoodDonations, mockFoodRequests } from "../../data/mockData";
 import DownloadOutlinedIcon from "@mui/icons-material/DownloadOutlined";
 import EmailIcon from "@mui/icons-material/Email";
 import PointOfSaleIcon from "@mui/icons-material/PointOfSale";
@@ -8,11 +8,10 @@ import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import TrafficIcon from "@mui/icons-material/Traffic";
 import Header from "../../components/Header";
 import LineChart from "../../components/LineChart";
-import GeographyChart from "../../components/GeographyChart";
-import BarChart from "../../components/BarChart";
 import StatBox from "../../components/StatBox";
 import ProgressCircle from "../../components/ProgressCircle";
 import Halal_Logo from "../../data/Halal_logo.svg";
+import FoodDistributionByRegion from "../../components/FoodDistributionByRegion";
 
 const AdminDashboard = () => {
     const theme = useTheme();
@@ -22,7 +21,7 @@ const AdminDashboard = () => {
         <Box m="20px">
             {/* HEADER */}
             <Box display="flex" justifyContent="space-between" alignItems="center">
-                <Header title="DASHBOARD" subtitle="Welcome to your dashboard" />
+                <Header title="DASHBOARD" subtitle="Hello Admin, Welcome to your dashboard" />
 
                 <Box>
                     <Button
@@ -181,7 +180,7 @@ const AdminDashboard = () => {
                         p="15px"
                     >
                         <Typography color={colors.grey[100]} variant="h5" fontWeight="600">
-                            Recent Donations
+                            Recently Completed Donations
                         </Typography>
                     </Box>
                     {mockFoodDonations.map((donation, i) => (
@@ -259,28 +258,57 @@ const AdminDashboard = () => {
                         fontWeight="600"
                         sx={{ padding: "30px 30px 0 30px" }}
                     >
-                        Sales Quantity
+                        Food Distribution by Region
                     </Typography>
                     <Box height="250px" mt="-20px">
-                        <BarChart isDashboard={true} />
+                        <FoodDistributionByRegion isDashboard={true} />
                     </Box>
                 </Box>
+
+                {/* Cloned Recently Completed Donations */}
                 <Box
                     gridColumn="span 4"
                     gridRow="span 2"
                     backgroundColor={colors.primary[400]}
-                    padding="30px"
+                    overflow="auto"
                 >
-                    <Typography
-                        variant="h5"
-                        fontWeight="600"
-                        sx={{ marginBottom: "15px" }}
+                    <Box
+                        display="flex"
+                        justifyContent="space-between"
+                        alignItems="center"
+                        borderBottom={`4px solid ${colors.primary[500]}`}
+                        colors={colors.grey[100]}
+                        p="15px"
                     >
-                        Geography Based Traffic
-                    </Typography>
-                    <Box height="200px">
-                        <GeographyChart isDashboard={true} />
+                        <Typography color={colors.grey[100]} variant="h5" fontWeight="600">
+                            Incoming Food Requests
+                        </Typography>
                     </Box>
+                    {mockFoodRequests.map((request, i) => (
+                        <Box
+                            key={`${request.recipientId}-${i}`}
+                            display="flex"
+                            justifyContent="space-between"
+                            alignItems="center"
+                            borderBottom={`4px solid ${colors.primary[500]}`}
+                            p="15px"
+                        >
+                            <Box>
+                                <Typography color={colors.greenAccent[500]} variant="h6" fontWeight="600">
+                                    Recipient ID: {request.recipientId}
+                                </Typography>
+                                <Typography color={colors.grey[100]}>
+                                    Family Size: {request.familySize} | Can Cook: {request.canCook ? "Yes" : "No"}
+                                </Typography>
+                                <Typography color={colors.grey[300]} fontStyle="italic">
+                                    Dietary: {request.dietaryRestrictions.join(", ")} | Food: {request.foodType.join(", ")}
+                                </Typography>
+                            </Box>
+                            <Box color={colors.grey[100]}>
+                                {new Date(request.dateOfRequest).toLocaleDateString("en-SG")}
+                            </Box>
+                        </Box>
+                    ))}
                 </Box>
             </Box>
         </Box>
