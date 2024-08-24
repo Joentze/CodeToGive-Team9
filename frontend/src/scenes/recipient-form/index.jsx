@@ -18,7 +18,7 @@ const RecipientForm = () => {
   const handleFormSubmit = async (values) => {
     try {
       // Add a new document in the "requests" collection
-      await addDoc(collection(store, "requests"), {
+      await addDoc(collection(store, "foodRequests"), {
         dateOfRequest: values.dateOfRequest,
         receivedAt: values.receivedAt,
         familySize: values.familySize,
@@ -210,6 +210,31 @@ const RecipientForm = () => {
       </Formik>
     </Box>
   );
+};
+
+// After onboarding
+
+// Function to fetch recipient id
+const fetchRecipientId = async (email) => {
+  try {
+    const q = query(
+      collection(store, "recipients"),
+      where("email", "==", email)
+    );
+    const querySnapshot = await getDocs(q);
+
+    if (!querySnapshot.empty) {
+      const recipientData = querySnapshot.docs[0].data();
+      const recipientId = querySnapshot.docs[0].id; // Fetching the document id
+      console.log("Recipient ID:", recipientId);
+      return recipientId;
+    } else {
+      console.log("No matching recipient found.");
+      return null;
+    }
+  } catch (error) {
+    console.error("Error fetching recipient:", error);
+  }
 };
 
 // Define the validation schema
