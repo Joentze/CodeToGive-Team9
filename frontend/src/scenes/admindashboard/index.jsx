@@ -1,18 +1,19 @@
 import { Box, Button, IconButton, Typography, useTheme } from "@mui/material";
 import { tokens } from "../../theme";
-import { mockFoodDonations, mockFoodRequests, mockFoodWasteData } from "../../data/mockData";
+import { mockFoodDonations, mockFoodRequests } from "../../data/mockData";
 import DownloadOutlinedIcon from "@mui/icons-material/DownloadOutlined";
 import EmailIcon from "@mui/icons-material/Email";
 import PointOfSaleIcon from "@mui/icons-material/PointOfSale";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import TrafficIcon from "@mui/icons-material/Traffic";
 import Header from "../../components/Header";
-import LineChart from "../../components/LineChart";
 import FoodWasteLineChart from "../../components/FoodWasteLineChart";
 import StatBox from "../../components/StatBox";
 import ProgressCircle from "../../components/ProgressCircle";
 import Halal_Logo from "../../data/Halal_logo.svg";
 import FoodDistributionByRegion from "../../components/FoodDistributionByRegion";
+import FoodSourcesPieChart from "../../components/FoodSourcesPieChart";
+
 
 const AdminDashboard = () => {
     const theme = useTheme();
@@ -229,24 +230,21 @@ const AdminDashboard = () => {
                     backgroundColor={colors.primary[400]}
                     p="30px"
                 >
-                    <Typography variant="h5" fontWeight="600">
-                        Campaign
-                    </Typography>
                     <Box
-                        display="flex"
-                        flexDirection="column"
-                        alignItems="center"
-                        mt="25px"
+                        gridColumn="span 4"
+                        gridRow="span 2"
+                        backgroundColor={colors.primary[400]}
                     >
-                        <ProgressCircle size="125" />
                         <Typography
                             variant="h5"
-                            color={colors.greenAccent[500]}
-                            sx={{ mt: "15px" }}
+                            fontWeight="600"
+                            sx={{ padding: "30px 30px 0 30px" }}
                         >
-                            $48,352 revenue generated
+                            Food Sources Breakdown
                         </Typography>
-                        <Typography>Includes extra misc expenditures and costs</Typography>
+                        <Box height="250px" mt="-20px">
+                            <FoodSourcesPieChart />
+                        </Box>
                     </Box>
                 </Box>
                 <Box

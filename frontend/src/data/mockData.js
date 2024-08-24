@@ -380,10 +380,18 @@ export const mockFoodWasteData = [
   },
 ];
 
+export const mockFoodTypeDistribution = [
+  { id: "Fresh Vegs", label: "Fresh Vegs", value: 35, color: "hsl(56, 70%, 50%)" },
+  { id: "Dry Goods", label: "Dry Goods", value: 25, color: "hsl(162, 70%, 50%)" },
+  { id: "Canned", label: "Canned", value: 20, color: "hsl(291, 70%, 50%)" },
+  { id: "Prepared Meals", label: "Prepared Meals", value: 15, color: "hsl(98, 70%, 50%)" },
+  { id: "Snacks", label: "Snacks", value: 5, color: "hsl(228, 70%, 50%)" },
+];
+
 export const mockFoodDonations = [
   {
     donor: "Baker & Cook",
-    volume: "150 kg",
+    volume: "150 meals",
     location: "Hillcrest Road, Singapore",
     address: [1.35, 103.994], // Latitude and longitude coordinates
     expiry_date: "August 24, 2024 at 8:00:30 PM UTC+8",
@@ -394,18 +402,18 @@ export const mockFoodDonations = [
   },
   {
     donor: "Little Farms",
-    volume: "200 kg",
+    volume: "200 meals",
     location: "Holland Village, Singapore",
     address: [1.311, 103.796],
     expiry_date: "August 26, 2024 at 6:00:00 PM UTC+8",
-    food_item: "Fresh Vegetables",
+    food_item: "Fresh Vegs",
     is_halal: false,
     is_perishable: true,
     quantity: 200,
   },
   {
     donor: "Nando's",
-    volume: "75 kg",
+    volume: "75 meals",
     location: "Plaza Singapura, Singapore",
     address: [1.300, 103.845],
     expiry_date: "August 27, 2024 at 12:00:00 PM UTC+8",
@@ -416,7 +424,7 @@ export const mockFoodDonations = [
   },
   {
     donor: "Marina Bay Sands",
-    volume: "500 kg",
+    volume: "500 meals",
     location: "Marina Bay, Singapore",
     address: [1.282, 103.858],
     expiry_date: "August 30, 2024 at 9:00:00 AM UTC+8",
@@ -427,7 +435,7 @@ export const mockFoodDonations = [
   },
   {
     donor: "Plain Vanilla",
-    volume: "120 kg",
+    volume: "120 meals",
     location: "Tiong Bahru, Singapore",
     address: [1.285, 103.826],
     expiry_date: "August 25, 2024 at 10:00:00 AM UTC+8",
@@ -438,7 +446,7 @@ export const mockFoodDonations = [
   },
   {
     donor: "Ugly Cake Shop",
-    volume: "50 kg",
+    volume: "50 meals",
     location: "Geylang, Singapore",
     address: [1.316, 103.884],
     expiry_date: "August 28, 2024 at 3:00:00 PM UTC+8",
@@ -449,7 +457,7 @@ export const mockFoodDonations = [
   },
   {
     donor: "SATS",
-    volume: "350 kg",
+    volume: "350 meals",
     location: "Changi, Singapore",
     address: [1.364, 103.991],
     expiry_date: "August 29, 2024 at 5:00:00 PM UTC+8",
@@ -460,7 +468,7 @@ export const mockFoodDonations = [
   },
   {
     donor: "Foodgnostic",
-    volume: "250 kg",
+    volume: "250 meals",
     location: "Bukit Batok, Singapore",
     address: [1.349, 103.756],
     expiry_date: "August 27, 2024 at 7:00:00 AM UTC+8",
@@ -471,7 +479,7 @@ export const mockFoodDonations = [
   },
   {
     donor: "Palate Sensations",
-    volume: "80 kg",
+    volume: "80 meals",
     location: "Commonwealth, Singapore",
     address: [1.302, 103.796],
     expiry_date: "August 26, 2024 at 4:00:00 PM UTC+8",
@@ -544,7 +552,7 @@ export const mockFoodRequests = [
     hasFridge: true,
     deliveryAddress: [1.3521, 103.8198],
     dietaryRestrictions: ["Halal"],
-    foodType: ["Dry Goods", "Fresh Vegetables"],
+    foodType: ["Dry Goods", "Fresh Vegs"],
   },
   {
     recipientId: "R002",
@@ -568,7 +576,7 @@ export const mockFoodRequests = [
     hasFridge: true,
     deliveryAddress: [1.3007, 103.8001],
     dietaryRestrictions: ["Vegetarian", "No Gluten"],
-    foodType: ["Canned Goods", "Dry Goods"],
+    foodType: ["Canned", "Dry Goods"],
   },
   {
     recipientId: "R004",
@@ -604,7 +612,7 @@ export const mockFoodRequests = [
     hasFridge: true,
     deliveryAddress: [1.3355, 103.7445],
     dietaryRestrictions: ["Vegetarian"],
-    foodType: ["Fresh Vegetables", "Canned Goods"],
+    foodType: ["Fresh Vegs", "Canned"],
   },
   {
     recipientId: "R007",
@@ -628,7 +636,7 @@ export const mockFoodRequests = [
     hasFridge: false,
     deliveryAddress: [1.4082, 103.9050],
     dietaryRestrictions: ["No Seafood"],
-    foodType: ["Canned Goods", "Snacks"],
+    foodType: ["Canned", "Snacks"],
   },
   {
     recipientId: "R009",
@@ -640,7 +648,7 @@ export const mockFoodRequests = [
     hasFridge: true,
     deliveryAddress: [1.3491, 103.7493],
     dietaryRestrictions: ["Halal"],
-    foodType: ["Fresh Vegetables", "Dry Goods"],
+    foodType: ["Fresh Vegs", "Dry Goods"],
   },
   {
     recipientId: "R010",
