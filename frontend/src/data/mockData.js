@@ -316,6 +316,70 @@ export const mockTransactions = [
     cost: "133.45",
   },
 ];
+
+export const mockFoodWasteData = [
+  {
+    month: "Jan",
+    perishable: 50,
+    nonPerishable: 30,
+  },
+  {
+    month: "Feb",
+    perishable: 60,
+    nonPerishable: 35,
+  },
+  {
+    month: "Mar",
+    perishable: 45,
+    nonPerishable: 25,
+  },
+  {
+    month: "Apr",
+    perishable: 70,
+    nonPerishable: 40,
+  },
+  {
+    month: "May",
+    perishable: 80,
+    nonPerishable: 50,
+  },
+  {
+    month: "Jun",
+    perishable: 55,
+    nonPerishable: 20,
+  },
+  {
+    month: "Jul",
+    perishable: 65,
+    nonPerishable: 30,
+  },
+  {
+    month: "Aug",
+    perishable: 75,
+    nonPerishable: 45,
+  },
+  {
+    month: "Sep",
+    perishable: 60,
+    nonPerishable: 35,
+  },
+  {
+    month: "Oct",
+    perishable: 70,
+    nonPerishable: 40,
+  },
+  {
+    month: "Nov",
+    perishable: 85,
+    nonPerishable: 50,
+  },
+  {
+    month: "Dec",
+    perishable: 90,
+    nonPerishable: 55,
+  },
+];
+
 export const mockFoodDonations = [
   {
     donor: "Baker & Cook",

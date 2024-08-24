@@ -1,6 +1,6 @@
 import { Box, Button, IconButton, Typography, useTheme } from "@mui/material";
 import { tokens } from "../../theme";
-import { mockFoodDonations, mockFoodRequests } from "../../data/mockData";
+import { mockFoodDonations, mockFoodRequests, mockFoodWasteData } from "../../data/mockData";
 import DownloadOutlinedIcon from "@mui/icons-material/DownloadOutlined";
 import EmailIcon from "@mui/icons-material/Email";
 import PointOfSaleIcon from "@mui/icons-material/PointOfSale";
@@ -8,6 +8,7 @@ import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import TrafficIcon from "@mui/icons-material/Traffic";
 import Header from "../../components/Header";
 import LineChart from "../../components/LineChart";
+import FoodWasteLineChart from "../../components/FoodWasteLineChart";
 import StatBox from "../../components/StatBox";
 import ProgressCircle from "../../components/ProgressCircle";
 import Halal_Logo from "../../data/Halal_logo.svg";
@@ -21,7 +22,7 @@ const AdminDashboard = () => {
         <Box m="20px">
             {/* HEADER */}
             <Box display="flex" justifyContent="space-between" alignItems="center">
-                <Header title="DASHBOARD" subtitle="Hello Admin, Welcome to your dashboard" />
+                <Header title="OVERVIEW" subtitle="Hello Admin, Welcome to your dashboard" />
 
                 <Box>
                     <Button
@@ -96,7 +97,7 @@ const AdminDashboard = () => {
                         title="324"
                         subtitle="New Donors Onboarded"
                         progress="0.30"
-                        increase="+5%"
+                        increase="+15%"
                         icon={
                             <PersonAddIcon
                                 sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
@@ -143,14 +144,14 @@ const AdminDashboard = () => {
                                 fontWeight="600"
                                 color={colors.grey[100]}
                             >
-                                Revenue Generated
+                                Food Waste Trends over time
                             </Typography>
                             <Typography
-                                variant="h3"
+                                variant="h4"
                                 fontWeight="bold"
                                 color={colors.greenAccent[500]}
                             >
-                                $59,342.32
+                                Tracking Perishable and Non-Perishable Waste
                             </Typography>
                         </Box>
                         <Box>
@@ -162,7 +163,7 @@ const AdminDashboard = () => {
                         </Box>
                     </Box>
                     <Box height="250px" m="-20px 0 0 0">
-                        <LineChart isDashboard={true} />
+                        <FoodWasteLineChart isDashboard={true} />
                     </Box>
                 </Box>
                 <Box
