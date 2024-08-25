@@ -1,4 +1,4 @@
-import { Box, IconButton, useTheme } from "@mui/material";
+import { Box, IconButton, useTheme, Badge } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
 import { ColorModeContext, tokens } from "../../theme";
 import InputBase from "@mui/material/InputBase";
@@ -9,42 +9,45 @@ import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
 import SearchIcon from "@mui/icons-material/Search";
 import { Link } from "react-router-dom";
-import { auth, store} from "../../firebase/base";
-import { collection, where, query, getDocs } from "firebase/firestore";
+import { auth, store } from "../../firebase/base";
+import { collection, where, query, onSnapshot } from "firebase/firestore";
 
 const Topbar = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const colorMode = useContext(ColorModeContext);
   const [userType, setUserType] = useState(null);
+  const [hasNewMatches, setHasNewMatches] = useState(false);
 
   useEffect(() => {
-    const fetchUserType = async () => {
+    const unsubscribe = () => {
       const currentUser = auth.currentUser;
       if (currentUser) {
-        const uid = currentUser.uid;
+        const recipientId = currentUser.uid;
+        const q = query(
+          collection(store, 'matches'),
+          where('recipientId', '==', recipientId),
+          where('status', '==', 'Match Successful')
+        );
 
-        // Query Firestore for the user's type
-        const recipientQuery = query(collection(store, 'recipients'), where('recipientId', '==', uid));
-        const recipientSnapshot = await getDocs(recipientQuery);
+        // Real-time listener for the matches collection
+        const unsubscribeSnapshot = onSnapshot(q, (snapshot) => {
+          setHasNewMatches(!snapshot.empty);
+        });
 
-        if (!recipientSnapshot.empty) {
-          setUserType("recipient");
-        } else {
-          const donorQuery = query(
-            collection(store, 'donors'),
-            where('donorId', '==', currentUser.uid)
-          );
-          const donorSnapshot = await getDocs(donorQuery);
-
-          if (!donorSnapshot.empty) {
-            setUserType("donor");
-          }
-        }
+        return unsubscribeSnapshot;
       }
     };
 
-    fetchUserType();
+    // Set up real-time listener
+    const unsubscribeListener = unsubscribe();
+
+    // Clean up the listener on component unmount
+    return () => {
+      if (unsubscribeListener) {
+        unsubscribeListener();
+      }
+    };
   }, []);
 
   return (
@@ -75,16 +78,25 @@ const Topbar = () => {
           to={"/notifications"}
           title="Notifications"
         >
-          <NotificationsOutlinedIcon />
+          <Badge
+            badgeContent="!" // This ensures the indicator is always shown
+            color="error"
+            anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+          >
+            <NotificationsOutlinedIcon />
+          </Badge>
         </IconButton>
-        <IconButton>
+        <IconButton
+          component={Link}
+          to={"/donorprofile"}
+          title="Profile"
+        >
           <SettingsOutlinedIcon />
         </IconButton>
 
-        {/* Conditional Routing Based on User Type */}
         <IconButton
           component={Link}
-          to={userType === "donor" ? "/donorprofile" : "/profile"}
+          to={"/profile"}
           title="Profile"
         >
           <PersonOutlinedIcon />
