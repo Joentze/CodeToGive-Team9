@@ -192,6 +192,13 @@ const Sidebar = () => {
               setSelected={setSelected}
             />
             <Item
+              title="Past Requests"
+              to="/pastrequests"
+              icon={<FoodBankIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+            <Item
               title="Admin Dashboard"
               to="/dashboard"
               icon={<CalendarTodayOutlinedIcon />}

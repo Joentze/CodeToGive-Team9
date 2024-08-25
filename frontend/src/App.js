@@ -25,6 +25,8 @@ import SignIn from './pages/signIn';
 
 import Onboarding from "./scenes/onboarding";
 
+import PastRequests from "./scenes/recipient/PastRequests";
+
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -57,6 +59,7 @@ function App() {
               <Route path="/donorprofile" element={<DonorProfile />} />
 
               <Route path="/recipient-form" element={<RecipientForm />} />
+              <Route path="/pastrequests" element={<PastRequests />} />
 
             </Routes>
           </main>
