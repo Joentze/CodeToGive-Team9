@@ -15,11 +15,15 @@ import Header from "../../components/Header";
 import { useTheme } from "@mui/material/styles";
 import { useState, useEffect } from "react";
 
+import { useNavigate } from "react-router-dom";
+
+
 // Import Firestore functions
 import { addDoc, collection, getDocs, query, where } from "firebase/firestore";
 import { store, auth } from "../../firebase/base"; // Import your initialized Firestore database
 
 const RecipientForm = () => {
+  const navigate = useNavigate();
   const theme = useTheme();
   const isDarkMode = theme.palette.mode === "dark";
   const [loading, setLoading] = useState(false);
@@ -72,7 +76,6 @@ const RecipientForm = () => {
       throw new Error("Unable to get coordinates from address");
     }
   };
-
   // Function to handle form submission
   const handleFormSubmit = async (values) => {
     setLoading(true);
@@ -106,6 +109,7 @@ const RecipientForm = () => {
       });
 
       alert("Request created successfully!");
+      navigate("/matching"); // Redirect to /matching
     } catch (error) {
       console.error("Error adding document: ", error);
       setError("Error creating request!");
