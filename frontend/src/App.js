@@ -23,15 +23,19 @@ import Calendar from "./scenes/calendar/calendar";
 import RecipientProfile from "./pages/RecipientProfile";
 import DonorProfile from "./pages/DonorProfile";
 
-import SignIn from './pages/signIn';
+import SignIn from "./pages/signIn";
 
 import Onboarding from "./scenes/onboarding";
+
 
 import PastRequests from "./scenes/recipient/PastRequests";
 
 import MatchNotification from './components/MatchNotification';
 
 import Matching from "./scenes/matching";
+
+
+import Donor from "./scenes/donor";
 
 
 function App() {
@@ -60,7 +64,7 @@ function App() {
               <Route path="/bar" element={<Bar />} />
               <Route path="/pie" element={<Pie />} />
               <Route path="/line" element={<Line />} />
-              <Route path="/faq" element={<FAQ />} />
+              <Route path="/feedback" element={<FAQ />} />
               <Route path="/calendar" element={<Calendar />} />
               <Route path="/geography" element={<Geography />} />
 
@@ -68,9 +72,13 @@ function App() {
               <Route path="/donorprofile" element={<DonorProfile />} />
 
               <Route path="/recipient-form" element={<RecipientForm />} />
+
               <Route path="/pastrequests" element={<PastRequests />} />
               <Route path="/notifications" element={<MatchNotification />} />
               <Route path="/matching" element={<Matching />} />
+
+              <Route path="/donor" element={<Donor />} />
+
             </Routes>
           </main>
         </div>

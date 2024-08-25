@@ -14,11 +14,13 @@ import * as yup from "yup";
 import Header from "../../components/Header";
 import { useTheme } from "@mui/material/styles";
 import { useState, useEffect } from "react";
+
 import { useNavigate } from "react-router-dom";
+
 
 // Import Firestore functions
 import { addDoc, collection, getDocs, query, where } from "firebase/firestore";
-import { store } from "../../firebase/base"; // Import your initialized Firestore database
+import { store, auth } from "../../firebase/base"; // Import your initialized Firestore database
 
 const RecipientForm = () => {
   const navigate = useNavigate();
@@ -29,6 +31,31 @@ const RecipientForm = () => {
   const [customDietaryRestrictions, setCustomDietaryRestrictions] =
     useState("");
   const [customFoodType, setCustomFoodType] = useState("");
+  const [recipientId, setRecipientId] = useState(null);
+  useEffect(() => {
+    const fetchUserData = async () => {
+      const currentUser = auth.currentUser;
+      if (currentUser) {
+        const uid = currentUser.uid;
+        console.log(uid);
+        const q = query(
+          collection(store, "recipients"),
+          where("recipientId", "==", uid)
+        );
+        const querySnapshot = await getDocs(q);
+
+        if (!querySnapshot.empty) {
+          const userDoc = querySnapshot.docs[0];
+          const fetchedRecipientId = userDoc.id;
+          setRecipientId(fetchedRecipientId);
+        } else {
+          console.log("No such document!");
+        }
+      }
+    };
+
+    fetchUserData();
+  }, []);
 
   const getCoordinatesFromAddress = async (address) => {
     const apiKey = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
@@ -60,8 +87,8 @@ const RecipientForm = () => {
       );
 
       await addDoc(collection(store, "foodRequests"), {
+        recipientId,
         dateOfRequest: values.dateOfRequest,
-        receivedAt: values.receivedAt,
         familySize: values.familySize,
         canCook: values.canCook,
         canReheat: values.canReheat,
@@ -70,10 +97,14 @@ const RecipientForm = () => {
           latitude,
           longitude,
         },
-        dietaryRestrictions: values.dietaryRestrictions
-          .split(",")
-          .map((item) => item.trim()),
-        foodType: values.foodType.split(",").map((item) => item.trim()),
+        dietaryRestrictions: [
+          ...values.dietaryRestrictions,
+          ...customDietaryRestrictions.split(",").map((item) => item.trim()),
+        ].filter(Boolean),
+        foodType: [
+          ...values.foodType,
+          ...customFoodType.split(",").map((item) => item.trim()),
+        ].filter(Boolean),
       });
 
       alert("Request created successfully!");
@@ -121,20 +152,6 @@ const RecipientForm = () => {
                 name="dateOfRequest"
                 error={!!touched.dateOfRequest && !!errors.dateOfRequest}
                 helperText={touched.dateOfRequest && errors.dateOfRequest}
-                InputLabelProps={{ shrink: true }}
-                sx={{ gridColumn: "span 4" }}
-              />
-              <TextField
-                fullWidth
-                variant="filled"
-                type="datetime-local"
-                label="Received At"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.receivedAt}
-                name="receivedAt"
-                error={!!touched.receivedAt && !!errors.receivedAt}
-                helperText={touched.receivedAt && errors.receivedAt}
                 InputLabelProps={{ shrink: true }}
                 sx={{ gridColumn: "span 4" }}
               />
@@ -234,12 +251,13 @@ const RecipientForm = () => {
                 </InputLabel>
                 <Select
                   labelId="dietaryRestrictions-label"
+                  multiple
                   value={values.dietaryRestrictions}
                   name="dietaryRestrictions"
                   onChange={(e) => {
                     const { value } = e.target;
                     handleChange(e);
-                    if (value === "others") {
+                    if (value.includes("others")) {
                       setCustomDietaryRestrictions(""); // Clear custom input when selecting "Others"
                     }
                   }}
@@ -248,15 +266,19 @@ const RecipientForm = () => {
                     !!touched.dietaryRestrictions &&
                     !!errors.dietaryRestrictions
                   }
+                  renderValue={(selected) =>
+                    Array.isArray(selected) ? selected.join(", ") : ""
+                  }
                   label="Dietary Restrictions"
                 >
                   <MenuItem value="none">None</MenuItem>
                   <MenuItem value="gluten-free">Gluten Free</MenuItem>
                   <MenuItem value="nut-free">Nut Free</MenuItem>
                   <MenuItem value="dairy-free">Dairy Free</MenuItem>
+                  <MenuItem value="halal">Halal</MenuItem>
                   <MenuItem value="others">Others</MenuItem>
                 </Select>
-                {values.dietaryRestrictions === "others" && (
+                {values.dietaryRestrictions.includes("others") && (
                   <TextField
                     fullWidth
                     variant="filled"
@@ -278,26 +300,36 @@ const RecipientForm = () => {
                 <InputLabel id="foodType-label">Food Type</InputLabel>
                 <Select
                   labelId="foodType-label"
+                  multiple
                   value={values.foodType}
                   name="foodType"
                   onChange={(e) => {
                     const { value } = e.target;
                     handleChange(e);
-                    if (value === "others") {
+                    if (value.includes("others")) {
                       setCustomFoodType(""); // Clear custom input when selecting "Others"
                     }
                   }}
                   onBlur={handleBlur}
                   error={!!touched.foodType && !!errors.foodType}
+                  renderValue={(selected) =>
+                    Array.isArray(selected) ? selected.join(", ") : ""
+                  }
                   label="Food Type"
                 >
                   <MenuItem value="vegetarian">Vegetarian</MenuItem>
                   <MenuItem value="fruits">Fruits</MenuItem>
-                  <MenuItem value="halal">Halal</MenuItem>
                   <MenuItem value="seafood">Seafood</MenuItem>
+                  <MenuItem value="rice">Rice</MenuItem>
+                  <MenuItem value="noodle">Noodle</MenuItem>
+                  <MenuItem value="meat">Meat</MenuItem>
+                  <MenuItem value="dessert">Dessert</MenuItem>
+                  <MenuItem value="baked-goods">Baked Goods</MenuItem>
+                  <MenuItem value="snacks">Snacks</MenuItem>
+                  <MenuItem value="beverages">Beverages</MenuItem>
                   <MenuItem value="others">Others</MenuItem>
                 </Select>
-                {values.foodType === "others" && (
+                {values.foodType.includes("others") && (
                   <TextField
                     fullWidth
                     variant="filled"
@@ -322,55 +354,28 @@ const RecipientForm = () => {
   );
 };
 
-// After onboarding
-
-// Function to fetch recipient id
-const fetchRecipientId = async (email) => {
-  try {
-    const q = query(
-      collection(store, "recipients"),
-      where("email", "==", email)
-    );
-    const querySnapshot = await getDocs(q);
-
-    if (!querySnapshot.empty) {
-      const recipientData = querySnapshot.docs[0].data();
-      const recipientId = querySnapshot.docs[0].id; // Fetching the document id
-      console.log("Recipient ID:", recipientId);
-      return recipientId;
-    } else {
-      console.log("No matching recipient found.");
-      return null;
-    }
-  } catch (error) {
-    console.error("Error fetching recipient:", error);
-  }
-};
-
 // Define the validation schema
 const checkoutSchema = yup.object().shape({
   dateOfRequest: yup.date().required("required"),
-  receivedAt: yup.date(),
   familySize: yup.number().required("required"),
   canCook: yup.boolean().required("required"),
   canReheat: yup.boolean().required("required"),
   hasFridge: yup.boolean().required("required"),
   address: yup.string().required("required"),
-  dietaryRestrictions: yup.string().required("required"),
-  foodType: yup.string().required("required"),
+  dietaryRestrictions: yup.array().of(yup.string()).required("required"),
+  foodType: yup.array().of(yup.string()).required("required"),
 });
 
 // Define the initial form values
 const initialValues = {
   dateOfRequest: "",
-  receivedAt: "",
   familySize: 0,
   canCook: false,
   canReheat: false,
   hasFridge: false,
   address: "",
-  dietaryRestrictions: "",
-  foodType: "",
+  dietaryRestrictions: [],
+  foodType: [],
 };
 
 export default RecipientForm;
