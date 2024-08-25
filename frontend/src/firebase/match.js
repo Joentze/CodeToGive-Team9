@@ -1,4 +1,4 @@
-import { doc, getDoc, getDocs, collection, addDoc } from "firebase/firestore";
+import { doc, getDoc, getDocs, collection, addDoc, query, where } from "firebase/firestore";
 import { store } from "./base.js";
 
 async function storeMatchData(match) {
@@ -29,6 +29,27 @@ async function getData() {
 
   return { donations, requests };
 }
+
+async function getUnMatchedData() {
+  const dq = query(collection(store, "donations"), where("isMatched", "==", false));
+  const rq = query(collection(store, "requests"), where("isMatched", "==", false));
+  
+  let donations = [];
+  let requests = [];
+
+  try {
+    const donationsData = await getDocs(dq);
+    donations = donationsData.docs.map((doc) => doc.data());
+
+    const requestsData = await getDocs(rq);
+    requests = requestsData.docs.map((doc) => doc.data());
+  } catch (error) {
+    console.error("Error getting documents: ", error);
+  }
+
+  return { donations, requests };
+}
+
 
 async function getMatchData() {
   const matchCollection = collection(store, "matches");
@@ -70,4 +91,4 @@ async function getMatchById(matchId) {
 }
 
 
-export {storeMatchData, getData, getMatchData, getMatchById }
+export {storeMatchData, getData, getMatchData, getMatchById, getUnMatchedData }
