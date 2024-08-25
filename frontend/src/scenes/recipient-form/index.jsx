@@ -13,11 +13,11 @@ import { Formik } from "formik";
 import * as yup from "yup";
 import Header from "../../components/Header";
 import { useTheme } from "@mui/material/styles";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 // Import Firestore functions
 import { addDoc, collection, getDocs, query, where } from "firebase/firestore";
-import { store } from "../../firebase/base"; // Import your initialized Firestore database
+import { store, auth } from "../../firebase/base"; // Import your initialized Firestore database
 
 const RecipientForm = () => {
   const theme = useTheme();
@@ -27,7 +27,31 @@ const RecipientForm = () => {
   const [customDietaryRestrictions, setCustomDietaryRestrictions] =
     useState("");
   const [customFoodType, setCustomFoodType] = useState("");
+  const [recipientId, setRecipientId] = useState(null);
+  useEffect(() => {
+    const fetchUserData = async () => {
+      const currentUser = auth.currentUser;
+      if (currentUser) {
+        const uid = currentUser.uid;
+        console.log(uid);
+        const q = query(
+          collection(store, "recipients"),
+          where("recipientId", "==", uid)
+        );
+        const querySnapshot = await getDocs(q);
 
+        if (!querySnapshot.empty) {
+          const userDoc = querySnapshot.docs[0];
+          const fetchedRecipientId = userDoc.id;
+          setRecipientId(fetchedRecipientId);
+        } else {
+          console.log("No such document!");
+        }
+      }
+    };
+
+    fetchUserData();
+  }, []);
   const getCoordinatesFromAddress = async (address) => {
     const apiKey = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
     const response = await fetch(
@@ -59,6 +83,7 @@ const RecipientForm = () => {
       );
 
       await addDoc(collection(store, "foodRequests"), {
+        recipientId,
         dateOfRequest: values.dateOfRequest,
         receivedAt: values.receivedAt,
         familySize: values.familySize,
