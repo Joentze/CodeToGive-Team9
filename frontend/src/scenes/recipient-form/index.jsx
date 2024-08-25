@@ -281,9 +281,9 @@ const RecipientForm = () => {
                   label="Food Type"
                 >
                   <MenuItem value="vegetarian">Vegetarian</MenuItem>
-                  <MenuItem value="vegan">Vegan</MenuItem>
+                  <MenuItem value="fruits">Fruits</MenuItem>
                   <MenuItem value="halal">Halal</MenuItem>
-                  <MenuItem value="kosher">Kosher</MenuItem>
+                  <MenuItem value="seafood">Seafood</MenuItem>
                   <MenuItem value="others">Others</MenuItem>
                 </Select>
                 {values.foodType === "others" && (
