@@ -4,7 +4,7 @@ import { collection, query, where, onSnapshot } from 'firebase/firestore';
 import './MatchNotification.css'; // Create or update this CSS file for custom styles
 
 const MatchNotification = () => {
-  const [matchDetails, setMatchDetails] = useState(null);
+  const [matches, setMatches] = useState([]);
 
   useEffect(() => {
     const currentUser = auth.currentUser;
@@ -14,9 +14,10 @@ const MatchNotification = () => {
 
       const unsubscribe = onSnapshot(q, (snapshot) => {
         if (!snapshot.empty) {
-          // Assuming you want to display the first match
-          const matchData = snapshot.docs[0].data();
-          setMatchDetails(matchData);
+          const matchData = snapshot.docs.map(doc => doc.data());
+          setMatches(matchData);
+        } else {
+          setMatches([]);
         }
       });
 
@@ -26,20 +27,41 @@ const MatchNotification = () => {
 
   return (
     <div className="match-notification-page">
-      {matchDetails ? (
-        <div className="match-card">
-          <h2>New Match Found!</h2>
-          <p><strong>Food Item:</strong> {matchDetails.foodItem}</p>
-          <p><strong>Quantity:</strong> {matchDetails.quantity}</p>
-          <p><strong>Family Size:</strong> {matchDetails.familySize}</p>
-          <p><strong>Is Halal:</strong> {matchDetails.isHalal ? 'Yes' : 'No'}</p>
-          <p><strong>Is Perishable:</strong> {matchDetails.isPerishable ? 'Yes' : 'No'}</p>
-          <p><strong>Can Cook:</strong> {matchDetails.canCook ? 'Yes' : 'No'}</p>
-          <p><strong>Can Reheat:</strong> {matchDetails.canReheat ? 'Yes' : 'No'}</p>
-          <p><strong>Has Fridge:</strong> {matchDetails.hasFridge ? 'Yes' : 'No'}</p>
-          <p><strong>Pick Up Address:</strong> {matchDetails.pickUpAddress.latitude}, {matchDetails.pickUpAddress.longitude}</p>
-          <p><strong>Delivery Address:</strong> {matchDetails.deliveryAddress.latitude}, {matchDetails.deliveryAddress.longitude}</p>
-          <p><strong>Expiry Date:</strong> {matchDetails.expiryDate.toDate().toLocaleString()}</p>
+      <h1 className="header">Matches for You!</h1>
+      {matches.length > 0 ? (
+        <div className="match-container">
+          {matches.map((match, index) => (
+            <div className="match-card" key={index}>
+              <div className="card-header">
+                <h2>Match {index + 1}</h2>
+              </div>
+              <div className="card-body">
+                <div className="card-row">
+                  <div className="card-item"><strong>Food Item:</strong> {match.foodItem}</div>
+                  <div className="card-item"><strong>Quantity:</strong> {match.quantity}</div>
+                </div>
+                <div className="card-row">
+                  <div className="card-item"><strong>Family Size:</strong> {match.familySize}</div>
+                  <div className="card-item"><strong>Is Halal:</strong> {match.isHalal ? 'Yes' : 'No'}</div>
+                </div>
+                <div className="card-row">
+                  <div className="card-item"><strong>Is Perishable:</strong> {match.isPerishable ? 'Yes' : 'No'}</div>
+                  <div className="card-item"><strong>Can Cook:</strong> {match.canCook ? 'Yes' : 'No'}</div>
+                </div>
+                <div className="card-row">
+                  <div className="card-item"><strong>Can Reheat:</strong> {match.canReheat ? 'Yes' : 'No'}</div>
+                  <div className="card-item"><strong>Has Fridge:</strong> {match.hasFridge ? 'Yes' : 'No'}</div>
+                </div>
+                <div className="card-row">
+                  <div className="card-item"><strong>Pick Up Address:</strong> {match.pickUpAddress.latitude}, {match.pickUpAddress.longitude}</div>
+                  <div className="card-item"><strong>Delivery Address:</strong> {match.deliveryAddress.latitude}, {match.deliveryAddress.longitude}</div>
+                </div>
+                <div className="card-row">
+                  <div className="card-item"><strong>Expiry Date:</strong> {match.expiryDate.toDate().toLocaleString()}</div>
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
       ) : (
         <div className="no-notification">
