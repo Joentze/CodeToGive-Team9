@@ -1,32 +1,10 @@
 import munkres from "munkres-js";
-import { store } from "../firebase/base.js";
-import { getDocs, collection } from "firebase/firestore";
-
-async function getUnMatchedData() {
-  const donationsCollection = collection(store, "donations");
-  const requestsCollection = collection(store, "foodRequests");
-
-  let donations = []; 
-  let requests = [];
-
-  try {
-    const donationsData = await getDocs(donationsCollection);
-    donations = donationsData.docs.map((doc) => doc.data());
-
-    const requestsData = await getDocs(requestsCollection);
-    requests = requestsData.docs.map((doc) => doc.data());
-    
-  } catch (err) {
-    console.error(err);
-  }
-
-  return { donations, requests };
-}
+import { getUnMatchedData, storeMatchData } from "../firebase/match";
 
 // Implement geolocation distance calculation
 function calculateDistance(pickUpAddress, deliveryAddress) {
   const { lat: lat1, long: lon1 } = pickUpAddress;
-  const { lat: lat2, long: lon2 } = deliveryAddress;
+  const { latitude: lat2, longtitude: lon2 } = deliveryAddress;
 
   const R = 6371; // Radius of the Earth in km
   const dLat = (lat2 - lat1) * (Math.PI / 180);
@@ -50,7 +28,7 @@ function createCostMatrix(donations, requests) {
 
       // Check 1 - if request is halal, donation must be halal
       if (
-        !donation.isHalal &&
+        !donation.dietaryRestrictions.includes("halal") &&
         request.dietaryRestrictions.includes("halal")
       ) {
         row.push(Infinity);
@@ -82,7 +60,7 @@ function createCostMatrix(donations, requests) {
       // Calculate distance cost
       const distance = calculateDistance(
         donation.pickUpAddress,
-        request.deliveryAddress
+        request.location
       );
       cost += distance; // in km
 
@@ -110,7 +88,7 @@ export async function findOptimalAssignments() {
     if (requestIndex < requests.length) {
       const donor = donations[donorIndex];
       const request = requests[requestIndex];
-      matches.push({
+       let match = {
         donorId: donor.donorID,
         foodItem: donor.foodItem,
         quantity: donor.quantity,
@@ -123,10 +101,16 @@ export async function findOptimalAssignments() {
         canCook: request.canCook,
         canReheat: request.canReheat,
         hasFridge: request.hasFridge,
-        deliveryAddress: request.deliveryAddress
-      });
+        deliveryAddress: request.location,
+        status: "Match Successful"
+      };
+
+      matches.push(match);
+      storeMatchData(match);
     }
   }
 
   console.log(matches);
+
+  return result
 }
