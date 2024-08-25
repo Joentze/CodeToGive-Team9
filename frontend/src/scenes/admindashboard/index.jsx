@@ -36,7 +36,7 @@ const AdminDashboard = () => {
                         }}
                     >
                         <DownloadOutlinedIcon sx={{ mr: "10px" }} />
-                        Download Reports
+                        Download Report
                     </Button>
                 </Box>
             </Box>
@@ -115,7 +115,7 @@ const AdminDashboard = () => {
                 >
                     <StatBox
                         title="1,325,134"
-                        subtitle="Traffic Received"
+                        subtitle="Familes Reached"
                         progress="0.80"
                         increase="+43%"
                         icon={
