@@ -13,6 +13,7 @@ import ProgressCircle from "../../components/ProgressCircle";
 import Halal_Logo from "../../data/Halal_logo.svg";
 import FoodDistributionByRegion from "../../components/FoodDistributionByRegion";
 import FoodSourcesPieChart from "../../components/FoodSourcesPieChart";
+import EthnicDistribution from "../../components/EthnicDistribution";
 
 
 const AdminDashboard = () => {
@@ -23,7 +24,7 @@ const AdminDashboard = () => {
         <Box m="20px">
             {/* HEADER */}
             <Box display="flex" justifyContent="space-between" alignItems="center">
-                <Header title="OVERVIEW" subtitle="Hello Admin, Welcome to your dashboard" />
+                <Header title="Monthly Overview" subtitle="Hello Admin, Welcome to your dashboard" />
 
                 <Box>
                     <Button
@@ -57,8 +58,8 @@ const AdminDashboard = () => {
                     justifyContent="center"
                 >
                     <StatBox
-                        title="12,361"
-                        subtitle="Emails Sent"
+                        title="75%"
+                        subtitle="Distribution Efficiency"
                         progress="0.75"
                         increase="+14%"
                         icon={
@@ -76,8 +77,8 @@ const AdminDashboard = () => {
                     justifyContent="center"
                 >
                     <StatBox
-                        title="431,225"
-                        subtitle="Sales Obtained"
+                        title="51,225"
+                        subtitle="Meals Donated"
                         progress="0.50"
                         increase="+21%"
                         icon={
@@ -114,8 +115,8 @@ const AdminDashboard = () => {
                     justifyContent="center"
                 >
                     <StatBox
-                        title="1,325,134"
-                        subtitle="Familes Reached"
+                        title="15,134"
+                        subtitle="Families Reached"
                         progress="0.80"
                         increase="+43%"
                         icon={
@@ -238,11 +239,11 @@ const AdminDashboard = () => {
                         <Typography
                             variant="h5"
                             fontWeight="600"
-                            sx={{ padding: "30px 30px 0 30px" }}
+                            sx={{ padding: "0px 0px 30px 0px" }}
                         >
                             Food Sources Breakdown
                         </Typography>
-                        <Box height="250px" mt="-20px">
+                        <Box height="250px" mt="-30px">
                             <FoodSourcesPieChart />
                         </Box>
                     </Box>
@@ -257,10 +258,10 @@ const AdminDashboard = () => {
                         fontWeight="600"
                         sx={{ padding: "30px 30px 0 30px" }}
                     >
-                        Food Distribution by Region
+                        Ethnic Distribution of Food Security
                     </Typography>
                     <Box height="250px" mt="-20px">
-                        <FoodDistributionByRegion isDashboard={true} />
+                        <EthnicDistribution isDashboard={true} />
                     </Box>
                 </Box>
 
