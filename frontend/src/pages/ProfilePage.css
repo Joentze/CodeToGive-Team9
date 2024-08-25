@@ -1,0 +1,68 @@
+.profile-page {
+    width: 80%;
+    max-width: 600px;
+    margin: 50px auto;
+    padding: 20px;
+    border-radius: 10px;
+    background-color: #f9f9f9;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .profile-info {
+    margin-top: 20px;
+  }
+  
+  .profile-details h2 {
+    font-size: 1.5em;
+    margin-bottom: 10px;
+    color: #333;
+  }
+
+  .profile-page h1 {
+    color: black;
+  }
+  
+  .profile-details p {
+    font-size: 1.2em;
+    margin-bottom: 8px;
+    color: #555;
+  }
+  
+  label {
+    display: block;
+    margin-bottom: 10px;
+    font-size: 1.1em;
+  }
+  
+  input {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    font-size: 1em;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    font-size: 1.1em;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .edit-button {
+    background-color: #4caf50;
+    color: white;
+  }
+  
+  .save-button {
+    background-color: #008cba;
+    color: white;
+  }
+  
+  button:hover {
+    opacity: 0.9;
+  }
+  
