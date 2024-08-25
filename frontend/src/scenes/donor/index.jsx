@@ -29,7 +29,7 @@ import {
     const [customFoodType, setCustomFoodType] = useState("");
   
     const getCoordinatesFromAddress = async (address) => {
-      const apiKey = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
+      const apiKey = "AIzaSyBFyFcrTzy-mENomj4I1moH2CCnW69aCQs";
       const response = await fetch(
         `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
           address
@@ -56,10 +56,18 @@ import {
         const { latitude, longitude } = await getCoordinatesFromAddress(
           values.pickUpAddress
         );
+
+        if (customFoodType) {
+          values.foodType.push(customFoodType);
+        }
+        if (customDietaryRestrictions) {
+          values.dietaryRestrictions.push(customDietaryRestrictions);
+        }
   
-        await addDoc(collection(store, "donationRequest"), {
+        await addDoc(collection(store, "donations"), {
           expiryDate: values.expiryDate,
           foodItem: values.foodItem,
+          foodType: values.foodType.map((item) => item.trim()),
           isHalal: values.isHalal,
           isPerishable: values.isPerishable,
           quantity: values.quantity,
@@ -67,8 +75,8 @@ import {
             latitude,
             longitude,
           },
-          dietaryRestrictions: values.dietaryRestrictions.map((item) => item.trim()),
-          foodType: values.foodType.split(",").map((item) => item.trim()),
+          quantity: values.quantity,
+          // dietaryRestrictions: values.dietaryRestrictions.map((item) => item.trim()),
         });
   
         alert("Donation request created successfully!");
@@ -87,7 +95,7 @@ import {
         <Formik
           onSubmit={handleFormSubmit}
           initialValues={initialValues}
-          validationSchema={checkoutSchema}
+          // validationSchema={checkoutSchema}
         >
           {({
             values,
@@ -98,7 +106,6 @@ import {
             handleSubmit,
           }) => (
             <form onSubmit={handleSubmit}>
-              {/* Form Fields */}
               <Box
                 display="grid"
                 gap="30px"
@@ -206,6 +213,26 @@ import {
                     color: isDarkMode ? "white" : "black",
                   }}
                 />
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={values.isHalal}
+                      onChange={handleChange}
+                      name="isHalal"
+                      color={isDarkMode ? "default" : "primary"}
+                      sx={{
+                        "& .MuiSvgIcon-root": {
+                          color: isDarkMode ? "white" : "default",
+                        },
+                      }}
+                    />
+                  }
+                  label="Halal"
+                  sx={{
+                    gridColumn: "span 2",
+                    color: isDarkMode ? "white" : "black",
+                  }}
+                />
                 <TextField
                   fullWidth
                   variant="filled"
@@ -248,7 +275,7 @@ import {
                     renderValue={(selected) => selected.join(", ")}
                     label="Dietary Restrictions"
                   >
-                    {["None", "Gluten-free", "Nut-free", "Dairy-free", "Others"].map((restriction) => (
+                    {["None", "Halal", "Vegetarian", "Gluten-free", "Nut-free", "Dairy-free", "Others"].map((restriction) => (
                     <MenuItem key={restriction} value={restriction}>
                       <Checkbox
                         checked={values.dietaryRestrictions.indexOf(restriction) > -1}
@@ -310,8 +337,6 @@ import {
     );
   };
   
-  // After onboarding
-  
   // Function to fetch recipient id
   const fetchDonorId = async (email) => {
     try {
@@ -342,8 +367,9 @@ import {
     quantity: yup.number().required("required"),
     isPerishable: yup.boolean().required("required"),
     pickUpAddress: yup.string().required("required"),
-    dietaryRestrictions: yup.array().min(1, "At least one restriction is required"),
+    // dietaryRestrictions: yup.array().min(1, "At least one restriction is required"),
     foodType: yup.array().min(1, "At least one food type is required"),
+    isHalal: yup.boolean().required("required"),
   });
   
   // Define the initial form values
@@ -352,8 +378,10 @@ import {
     foodItem: "",
     quantity: 0,
     pickUpAddress: "",
-    dietaryRestrictions: [],
+    // dietaryRestrictions: [],
     foodType: [],
+    isPerishable: false,
+    isHalal: false,
   };
   
   export default Donor;
