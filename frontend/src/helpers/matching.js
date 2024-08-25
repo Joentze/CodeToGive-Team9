@@ -4,7 +4,7 @@ import { getUnMatchedData, storeMatchData } from "../firebase/match";
 // Implement geolocation distance calculation
 function calculateDistance(pickUpAddress, deliveryAddress) {
   const { lat: lat1, long: lon1 } = pickUpAddress;
-  const { latitude: lat2, longtitude: lon2 } = deliveryAddress;
+  const { latitude: lat2, longitude: lon2 } = deliveryAddress;
 
   const R = 6371; // Radius of the Earth in km
   const dLat = (lat2 - lat1) * (Math.PI / 180);
@@ -28,9 +28,10 @@ function createCostMatrix(donations, requests) {
 
       // Check 1 - if request is halal, donation must be halal
       if (
-        !donation.dietaryRestrictions.includes("halal") &&
-        request.dietaryRestrictions.includes("halal")
+        request.dietaryRestrictions.includes("halal") &&
+        !donation.dietaryRestrictions.includes("halal")
       ) {
+        console.log("1")
         row.push(Infinity);
         continue; // Skip to the next request
       }
@@ -45,7 +46,14 @@ function createCostMatrix(donations, requests) {
       }
 
       // Check 3 - check expiry date and time
-      if (donation.expiryDate <= request.dateOfRequest) {
+      const donation_timestamp = donation.expiryDate.seconds;
+      const donation_date = new Date(donation_timestamp*1000);
+
+      const recipient_dateString = request.dateOfRequest;
+      const recipient_date = new Date(recipient_dateString);
+
+      if (donation_date <= recipient_date) {
+        console.log(donation_date, recipient_date)
         row.push(Infinity);
         continue; // Skip to the next request
       }
@@ -54,7 +62,7 @@ function createCostMatrix(donations, requests) {
       const portionCost =
         donation.quantity >= request.familySize
           ? donation.quantity / request.familySize
-          : request.family_size / donation.quantity;
+          : request.familySize / donation.quantity;
       cost += portionCost;
 
       // Calculate distance cost
@@ -69,6 +77,7 @@ function createCostMatrix(donations, requests) {
       cost += foodCost;
 
       row.push(cost);
+
     }
     costMatrix.push(row);
   }
@@ -77,10 +86,15 @@ function createCostMatrix(donations, requests) {
 
 export async function findOptimalAssignments() {
   const { donations, requests } = await getUnMatchedData();
-  console.log(donations, requests);
 
-  const costMatrix = createCostMatrix(donations.slice(0,8), requests.slice(0,8));
+
+  const costMatrix = createCostMatrix(
+    donations.slice(0,4),
+    requests.slice(0,4)
+  );
+
   const result = munkres(costMatrix);
+  console.log(result)
 
   const matches = [];
 
@@ -93,10 +107,10 @@ export async function findOptimalAssignments() {
         foodItem: donor.foodItem,
         quantity: donor.quantity,
         expiryDate: donor.expiryDate,
-        isHalal: donor.isHalal,
+        dietaryRestrictions: donor.dietaryRestrictions,
         isPerishable: donor.isPerishable,
         pickUpAddress: donor.pickUpAddress,
-        recipientId: request.recipientID,
+        recipientId: request.recipientId,
         familySize: request.familySize,
         canCook: request.canCook,
         canReheat: request.canReheat,
