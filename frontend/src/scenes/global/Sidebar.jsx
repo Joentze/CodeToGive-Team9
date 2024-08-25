@@ -214,6 +214,13 @@ const Sidebar = () => {
               setSelected={setSelected}
             />
             <Item
+              title="All Matches"
+              to="/matching"
+              icon={<HelpOutlineOutlinedIcon />}
+              selected={selected}
+              setSelected={setSelected}
+              />
+            <Item
               title="FAQ Page"
               to="/faq"
               icon={<HelpOutlineOutlinedIcon />}

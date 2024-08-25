@@ -33,6 +33,8 @@ import MatchNotification from './components/MatchNotification';
 import Donor from "./scenes/donor"
 import Tracking from "./scenes/tracking";
 
+import Matching from "./scenes/matching";
+
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -68,7 +70,7 @@ function App() {
               <Route path="/donorprofile" element={<DonorProfile />} />
 
               <Route path="/recipient-form" element={<RecipientForm />} />
-              <Route path="/pastrequests" element={<PastRequests />} />
+              <Route path="/matching" element={<Matching />} />              <Route path="/pastrequests" element={<PastRequests />} />
               <Route path="/notifications" element={<MatchNotification />} />
               <Route path="/donor" element={<Donor />} />
 
