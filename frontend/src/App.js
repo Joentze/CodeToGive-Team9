@@ -17,6 +17,7 @@ import RecipientForm from "./scenes/recipient-form";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { ColorModeContext, useMode } from "./theme";
 import Calendar from "./scenes/calendar/calendar";
+import Donor from "./scenes/donor"
 
 import RecipientProfile from "./pages/RecipientProfile";
 import DonorProfile from "./pages/DonorProfile";
@@ -57,6 +58,7 @@ function App() {
               <Route path="/donorprofile" element={<DonorProfile />} />
 
               <Route path="/recipient-form" element={<RecipientForm />} />
+              <Route path="/donor" element={<Donor />} />
 
             </Routes>
           </main>
