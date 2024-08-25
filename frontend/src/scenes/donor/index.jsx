@@ -29,7 +29,7 @@ import {
     const [customFoodType, setCustomFoodType] = useState("");
   
     const getCoordinatesFromAddress = async (address) => {
-      const apiKey = "AIzaSyBFyFcrTzy-mENomj4I1moH2CCnW69aCQs";
+      const apiKey = process.env.REACT_APP_GOOGLE_MAPS_API_KEY
       const response = await fetch(
         `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
           address
@@ -378,7 +378,7 @@ import {
     foodItem: "",
     quantity: 0,
     pickUpAddress: "",
-    // dietaryRestrictions: [],
+    dietaryRestrictions: [],
     foodType: [],
     isPerishable: false,
     isHalal: false,
