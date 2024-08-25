@@ -1,0 +1,58 @@
+/* General page styling */
+.match-notification-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+  }
+  
+  /* Notification card styling */
+  .match-card {
+    background: #7dadfa;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    max-width: 600px;
+    width: 100%;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .match-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  }
+  
+  .match-card h2 {
+    color: #2c3e50;
+    font-size: 24px;
+    margin-bottom: 15px;
+    text-align: center;
+  }
+  
+  .match-card p {
+    font-size: 16px;
+    margin: 8px 0;
+    color: #34495e;
+  }
+  
+  .match-card strong {
+    color: #2c3e50;
+  }
+  
+  /* No notification message styling */
+  .no-notification {
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    max-width: 600px;
+    width: 100%;
+    text-align: center;
+  }
+  
+  .no-notification p {
+    font-size: 18px;
+    color: #7f8c8d;
+  }
+  
