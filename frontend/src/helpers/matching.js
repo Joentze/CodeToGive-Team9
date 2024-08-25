@@ -79,7 +79,7 @@ export async function findOptimalAssignments() {
   const { donations, requests } = await getUnMatchedData();
   console.log(donations, requests);
 
-  const costMatrix = createCostMatrix(donations, requests);
+  const costMatrix = createCostMatrix(donations.slice(0,8), requests.slice(0,10));
   const result = munkres(costMatrix);
 
   const matches = [];

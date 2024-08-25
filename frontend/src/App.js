@@ -1,5 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
+import { auth, store } from "./firebase/base";
+import { collection, query, where, getDocs } from "firebase/firestore";
 import Topbar from "./scenes/global/Topbar";
 import Sidebar from "./scenes/global/Sidebar";
 import Dashboard from "./scenes/dashboard";
@@ -21,16 +23,21 @@ import Calendar from "./scenes/calendar/calendar";
 import RecipientProfile from "./pages/RecipientProfile";
 import DonorProfile from "./pages/DonorProfile";
 
-import SignIn from './pages/signIn';
+import SignIn from "./pages/signIn";
 
 import Onboarding from "./scenes/onboarding";
 import Donor from "./scenes/donor"
 import Tracking from "./scenes/tracking";
 
+import PastRequests from "./scenes/recipient/PastRequests";
+import MatchNotification from './components/MatchNotification';
+import Matching from "./scenes/matching";
 
 function App() {
   const [theme, colorMode] = useMode();
   const [isSidebar, setIsSidebar] = useState(true);
+ 
+
 
   return (
     <ColorModeContext.Provider value={colorMode}>
@@ -40,6 +47,7 @@ function App() {
           <Sidebar isSidebar={isSidebar} />
           <main className="content">
             <Topbar setIsSidebar={setIsSidebar} />
+            
             <Routes>
               <Route path="/" element={<Dashboard />} />
               <Route path="/dashboard" element={<AdminDashboard />} />
@@ -53,12 +61,19 @@ function App() {
               <Route path="/line" element={<Line />} />
               <Route path="/faq" element={<FAQ />} />
               <Route path="/tracking" element={<Tracking />} />
+              <Route path="/feedback" element={<FAQ />} />
+              <Route path="/calendar" element={<Calendar />} />
               <Route path="/geography" element={<Geography />} />
 
               <Route path="/profile" element={<RecipientProfile />} />
               <Route path="/donorprofile" element={<DonorProfile />} />
 
               <Route path="/recipient-form" element={<RecipientForm />} />
+
+              <Route path="/pastrequests" element={<PastRequests />} />
+              <Route path="/notifications" element={<MatchNotification />} />
+              <Route path="/matching" element={<Matching />} />
+
               <Route path="/donor" element={<Donor />} />
 
             </Routes>

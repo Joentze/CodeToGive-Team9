@@ -18,7 +18,7 @@ import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import MapOutlinedIcon from "@mui/icons-material/MapOutlined";
 import FoodBankIcon from "@mui/icons-material/FoodBank";
 import FBSG from "../../data/FBSG.png";
-import VolunteerActivismIcon from '@mui/icons-material/VolunteerActivism';
+import VolunteerActivismIcon from "@mui/icons-material/VolunteerActivism";
 
 const Item = ({ title, to, icon, selected, setSelected }) => {
   const theme = useTheme();
@@ -200,6 +200,13 @@ const Sidebar = () => {
               setSelected={setSelected}
             />
             <Item
+              title="Past Requests"
+              to="/pastrequests"
+              icon={<FoodBankIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+            <Item
               title="Admin Dashboard"
               to="/dashboard"
               icon={<CalendarTodayOutlinedIcon />}
@@ -207,8 +214,8 @@ const Sidebar = () => {
               setSelected={setSelected}
             />
             <Item
-              title="FAQ Page"
-              to="/faq"
+              title="Feedback"
+              to="/feedback"
               icon={<HelpOutlineOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
