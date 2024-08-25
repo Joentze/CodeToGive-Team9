@@ -140,7 +140,7 @@ import {
                     label="Food Type"
                     renderValue={(selected) => selected.join(", ")}
                   >
-                    {["Vegetarian", "Meat", "Fruits", "Halal", "Seafood", "Baked Goods", "Beverages", "Others"].map((foodType) => (
+                    {["Rice", "Noodle", "Vegetables", "Meat", "Fruits", "Seafood", "Desserts", "Baked Goods", "Canned Food", "Snacks", "Beverages", "Others"].map((foodType) => (
                     <MenuItem key={foodType} value={foodType}>
                       <Checkbox
                         checked={values.foodType.indexOf(foodType) > -1}
