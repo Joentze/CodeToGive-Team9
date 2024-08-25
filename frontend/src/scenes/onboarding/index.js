@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { useForm, Controller } from "react-hook-form";
 
 import {
@@ -31,6 +32,8 @@ import {
 
 const Onboarding = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
+
+  const navigate = useNavigate();
 
   const [userId, setUserId] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -113,6 +116,15 @@ const Onboarding = () => {
 
       await addDoc(collection(store, collectionName), docData);
       console.log("Document successfully written!");
+      setMessage({ text: "Onboarding successful!", type: "success" });
+
+      setTimeout(() => {
+        if (data.userType === "donor") {
+          navigate('/form'); // REPLACE WITH DONOR-FORM
+        } else if (data.userType === "recipient") {
+          navigate('/calendar'); // REPLACE WITH RECIPIENT FORM
+        }
+      }, 2000);
     } catch (error) {
       console.error("Error adding document: ", error);
     }
