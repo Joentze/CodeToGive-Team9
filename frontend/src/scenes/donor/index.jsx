@@ -75,7 +75,6 @@ import {
             latitude,
             longitude,
           },
-          quantity: values.quantity,
           // dietaryRestrictions: values.dietaryRestrictions.map((item) => item.trim()),
         });
   
