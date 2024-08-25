@@ -4,6 +4,9 @@ import * as yup from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Header from "../../components/Header";
 
+import { addDoc, collection, onAuthStateChanged } from "../../firebase/base";
+import { useEffect } from "react";
+
 const Form = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
 
@@ -13,7 +16,7 @@ const Form = () => {
 
   return (
     <Box m="20px">
-      <Header title="CREATE USER" subtitle="Create a New User Profile" />
+      <Header title="ONBOARDING" subtitle="Onboard as a Donor or Recipient!" />
 
       <Formik
         onSubmit={handleFormSubmit}
