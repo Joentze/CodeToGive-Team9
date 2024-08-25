@@ -126,5 +126,5 @@ export async function findOptimalAssignments() {
 
   console.log("Matches", matches);
 
-  return result
+  return matches
 }
