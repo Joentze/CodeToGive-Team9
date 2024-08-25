@@ -1,22 +1,46 @@
 import React, { useState, useEffect } from 'react';
+import { auth, store } from '../firebase/base';
+import { collection, query, where, getDocs, doc, updateDoc } from 'firebase/firestore';
 import './ProfilePage.css'; // Import the CSS file for styling
 
 const RecipientProfile = () => {
-  const [user, setUser] = useState({
-    name: 'John Doe',
-    contactName: 'jane doe',
-    phone: '123-456-7890',
-  });
+  const [user, setUser] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
-  const [editedUser, setEditedUser] = useState(user);
+  const [editedUser, setEditedUser] = useState({});
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      const currentUser = auth.currentUser;
+      if (currentUser) {
+        const uid = currentUser.uid;
+        console.log(uid);
+        const q = query(collection(store, 'recipients'), where('recipientId', '==', uid));
+        const querySnapshot = await getDocs(q);
+
+        if (!querySnapshot.empty) {
+          const userDoc = querySnapshot.docs[0];
+          setUser({ ...userDoc.data(), recipientId: userDoc.id }); // Add recipientId to track document ID
+          setEditedUser(userDoc.data());
+        } else {
+          console.log('No such document!');
+        }
+      }
+    };
+
+    fetchUserData();
+  }, []);
 
   const handleEditClick = () => {
     setIsEditing(true);
   };
 
-  const handleSaveClick = () => {
-    setUser(editedUser); // Save the edited user details
-    setIsEditing(false);
+  const handleSaveClick = async () => {
+    if (user) {
+      const userDocRef = doc(store, 'recipients', user.recipientId); // Use the recipientId to update the document
+      await updateDoc(userDocRef, editedUser);
+      setUser(editedUser); // Save the edited user details
+      setIsEditing(false);
+    }
   };
 
   const handleChange = (e) => {
@@ -32,42 +56,48 @@ const RecipientProfile = () => {
       <h1>Recipient Profile Page</h1>
       <div className="profile-info">
         <div className="profile-details">
-          {isEditing ? (
+          {user ? (
             <>
-              <label>
-                Name:
-                <input
-                  type="text"
-                  name="name"
-                  value={editedUser.name}
-                  onChange={handleChange}
-                />
-              </label>
-              <label>
-                Contact person:
-                <input
-                  type="text"
-                  name="contactName"
-                  value={editedUser.contactName}
-                  onChange={handleChange}
-                />
-              </label>
-              <label>
-                Contact Number:
-                <input
-                  type="tel"
-                  name="phone"
-                  value={editedUser.phone}
-                  onChange={handleChange}
-                />
-              </label>
+              {isEditing ? (
+                <>
+                  <label>
+                    Name:
+                    <input
+                      type="text"
+                      name="name"
+                      value={editedUser.name || ''}
+                      onChange={handleChange}
+                    />
+                  </label>
+                  <label>
+                    Contact person:
+                    <input
+                      type="text"
+                      name="contactPerson"
+                      value={editedUser.contactPerson || ''}
+                      onChange={handleChange}
+                    />
+                  </label>
+                  <label>
+                    Contact Number:
+                    <input
+                      type="tel"
+                      name="contactNumber"
+                      value={editedUser.contactNumber || ''}
+                      onChange={handleChange}
+                    />
+                  </label>
+                </>
+              ) : (
+                <>
+                  <h2>Name: {user.name}</h2>
+                  <p>Contact Person: {user.contactPerson}</p>
+                  <p>Phone: {user.contactNumber}</p>
+                </>
+              )}
             </>
           ) : (
-            <>
-              <h2>Name: {user.name}</h2>
-              <p>Email: {user.contactName}</p>
-              <p>Phone: {user.phone}</p>
-            </>
+            <p>Loading user data...</p>
           )}
         </div>
       </div>
