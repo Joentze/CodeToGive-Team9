@@ -63,9 +63,12 @@ export const Auth = () => {
       <Button variant="contained" color="secondary" onClick={googleSignIn}>
         Sign In With Google
       </Button>
-      <Button variant="outlined" color="error" onClick={logout}>
-        Logout
+      <Button variant="contained" color="secondary" onClick={googleSignIn}>
+        Sign Up
       </Button>
+      {/* <Button variant="outlined" color="error" onClick={logout}>
+        Logout
+      </Button> */}
     </Box>
   );
 };
