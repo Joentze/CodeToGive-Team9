@@ -29,7 +29,7 @@ import {
     const [customFoodType, setCustomFoodType] = useState("");
   
     const getCoordinatesFromAddress = async (address) => {
-      const apiKey = process.env.REACT_APP_GOOGLE_MAPS_API_KEY
+      const apiKey = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
       const response = await fetch(
         `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
           address
@@ -95,7 +95,7 @@ import {
         <Formik
           onSubmit={handleFormSubmit}
           initialValues={initialValues}
-          // validationSchema={checkoutSchema}
+          validationSchema={checkoutSchema}
         >
           {({
             values,
@@ -247,7 +247,7 @@ import {
                   InputLabelProps={{ shrink: true }}
                   sx={{ gridColumn: "span 4" }}
                 />
-                 <FormControl
+                 {/* <FormControl
                   fullWidth
                   variant="filled"
                   sx={{ gridColumn: "span 4" }}
@@ -309,7 +309,7 @@ import {
                       sx={{ mt: "10px" }}
                     />
                   )}
-                </FormControl>
+                </FormControl> */}
                 <TextField
                   fullWidth
                   variant="filled"
@@ -337,7 +337,7 @@ import {
     );
   };
   
-  // Function to fetch recipient id
+  // Function to fetch donor id
   const fetchDonorId = async (email) => {
     try {
       const q = query(
@@ -378,7 +378,7 @@ import {
     foodItem: "",
     quantity: 0,
     pickUpAddress: "",
-    dietaryRestrictions: [],
+    // dietaryRestrictions: [],
     foodType: [],
     isPerishable: false,
     isHalal: false,
