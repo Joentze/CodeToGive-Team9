@@ -102,6 +102,7 @@ const RecipientForm = () => {
           ...values.foodType,
           ...customFoodType.split(",").map((item) => item.trim()),
         ].filter(Boolean),
+        isMatched: false
       });
 
       alert("Request created successfully!");
