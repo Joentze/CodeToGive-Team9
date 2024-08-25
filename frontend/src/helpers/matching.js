@@ -4,7 +4,7 @@ import { getUnMatchedData, storeMatchData } from "../firebase/match";
 // Implement geolocation distance calculation
 function calculateDistance(pickUpAddress, deliveryAddress) {
   const { lat: lat1, long: lon1 } = pickUpAddress;
-  const { lat: lat2, long: lon2 } = deliveryAddress;
+  const { latitude: lat2, longtitude: lon2 } = deliveryAddress;
 
   const R = 6371; // Radius of the Earth in km
   const dLat = (lat2 - lat1) * (Math.PI / 180);
@@ -28,7 +28,7 @@ function createCostMatrix(donations, requests) {
 
       // Check 1 - if request is halal, donation must be halal
       if (
-        !donation.isHalal &&
+        !donation.dietaryRestrictions.includes("halal") &&
         request.dietaryRestrictions.includes("halal")
       ) {
         row.push(Infinity);
@@ -60,7 +60,7 @@ function createCostMatrix(donations, requests) {
       // Calculate distance cost
       const distance = calculateDistance(
         donation.pickUpAddress,
-        request.deliveryAddress
+        request.location
       );
       cost += distance; // in km
 
@@ -79,7 +79,7 @@ export async function findOptimalAssignments() {
   const { donations, requests } = await getUnMatchedData();
   console.log(donations, requests);
 
-  const costMatrix = createCostMatrix(donations.slice(0,8), requests.slice(0,10));
+  const costMatrix = createCostMatrix(donations, requests);
   const result = munkres(costMatrix);
 
   const matches = [];
@@ -101,7 +101,7 @@ export async function findOptimalAssignments() {
         canCook: request.canCook,
         canReheat: request.canReheat,
         hasFridge: request.hasFridge,
-        deliveryAddress: request.deliveryAddress,
+        deliveryAddress: request.location,
         status: "Match Successful"
       };
 
