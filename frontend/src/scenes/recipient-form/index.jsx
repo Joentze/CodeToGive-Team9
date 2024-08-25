@@ -60,7 +60,6 @@ const RecipientForm = () => {
 
       await addDoc(collection(store, "foodRequests"), {
         dateOfRequest: values.dateOfRequest,
-        receivedAt: values.receivedAt,
         familySize: values.familySize,
         canCook: values.canCook,
         canReheat: values.canReheat,
@@ -119,20 +118,6 @@ const RecipientForm = () => {
                 name="dateOfRequest"
                 error={!!touched.dateOfRequest && !!errors.dateOfRequest}
                 helperText={touched.dateOfRequest && errors.dateOfRequest}
-                InputLabelProps={{ shrink: true }}
-                sx={{ gridColumn: "span 4" }}
-              />
-              <TextField
-                fullWidth
-                variant="filled"
-                type="datetime-local"
-                label="Received At"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.receivedAt}
-                name="receivedAt"
-                error={!!touched.receivedAt && !!errors.receivedAt}
-                helperText={touched.receivedAt && errors.receivedAt}
                 InputLabelProps={{ shrink: true }}
                 sx={{ gridColumn: "span 4" }}
               />
@@ -348,7 +333,6 @@ const fetchRecipientId = async (email) => {
 // Define the validation schema
 const checkoutSchema = yup.object().shape({
   dateOfRequest: yup.date().required("required"),
-  receivedAt: yup.date(),
   familySize: yup.number().required("required"),
   canCook: yup.boolean().required("required"),
   canReheat: yup.boolean().required("required"),
@@ -361,7 +345,6 @@ const checkoutSchema = yup.object().shape({
 // Define the initial form values
 const initialValues = {
   dateOfRequest: "",
-  receivedAt: "",
   familySize: 0,
   canCook: false,
   canReheat: false,
