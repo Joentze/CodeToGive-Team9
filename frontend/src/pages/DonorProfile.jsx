@@ -1,23 +1,53 @@
 import React, { useState, useEffect } from 'react';
+import { auth, store } from '../firebase/base';
+import { collection, query, where, getDocs, doc, updateDoc } from 'firebase/firestore';
 import './ProfilePage.css'; // Import the CSS file for styling
 
 const DonorProfile = () => {
-  const [user, setUser] = useState({
-    name: 'Skyline Restaurant',
-    contactName: 'Mark',
-    phone: '123-456-7890',
-    certification: 'ISO 22000'
-  });
+  const [user, setUser] = useState(null);
+  const [userDocId, setUserDocId] = useState(null); // Store document ID
   const [isEditing, setIsEditing] = useState(false);
-  const [editedUser, setEditedUser] = useState(user);
+  const [editedUser, setEditedUser] = useState({});
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      const currentUser = auth.currentUser;
+      console.log(currentUser);
+
+      if (currentUser) {
+        console.log("Current user:", currentUser);
+        const q = query(
+          collection(store, 'donors'),
+          where('donorId', '==', currentUser.uid)
+        ); // Assuming you use UID to identify the donor
+        
+        const querySnapshot = await getDocs(q);
+
+        if (!querySnapshot.empty) {
+          const userDoc = querySnapshot.docs[0];
+          setUser(userDoc.data());
+          setEditedUser(userDoc.data());
+          setUserDocId(userDoc.id); // Store the document ID
+        } else {
+          console.log('No such document!');
+        }
+      }
+    };
+
+    fetchUserData();
+  }, []);
 
   const handleEditClick = () => {
     setIsEditing(true);
   };
 
-  const handleSaveClick = () => {
-    setUser(editedUser); // Save the edited user details
-    setIsEditing(false);
+  const handleSaveClick = async () => {
+    if (userDocId && editedUser) {
+      const docRef = doc(store, 'donors', userDocId); // Use the stored document ID
+      await updateDoc(docRef, editedUser);
+      setUser(editedUser); // Save the edited user details
+      setIsEditing(false);
+    }
   };
 
   const handleChange = (e) => {
@@ -33,52 +63,58 @@ const DonorProfile = () => {
       <h1>Donor Profile Page</h1>
       <div className="profile-info">
         <div className="profile-details">
-          {isEditing ? (
+          {user ? (
             <>
-              <label>
-                Name:
-                <input
-                  type="text"
-                  name="name"
-                  value={editedUser.name}
-                  onChange={handleChange}
-                />
-              </label>
-              <label>
-                Contact person:
-                <input
-                  type="text"
-                  name="contactName"
-                  value={editedUser.contactName}
-                  onChange={handleChange}
-                />
-              </label>
-              <label>
-                Contact Number:
-                <input
-                  type="tel"
-                  name="phone"
-                  value={editedUser.phone}
-                  onChange={handleChange}
-                />
-              </label>
-              <label>
-                Food Safety Certification:
-                <input
-                  type="text"
-                  name="certification"
-                  value={editedUser.certification}
-                  onChange={handleChange}
-                />
-              </label>
+              {isEditing ? (
+                <>
+                  <label>
+                    Name:
+                    <input
+                      type="text"
+                      name="name"
+                      value={editedUser.name || ''}
+                      onChange={handleChange}
+                    />
+                  </label>
+                  <label>
+                    Contact Person:
+                    <input
+                      type="text"
+                      name="contactPerson"
+                      value={editedUser.contactPerson || ''}
+                      onChange={handleChange}
+                    />
+                  </label>
+                  <label>
+                    Contact Number:
+                    <input
+                      type="tel"
+                      name="contactNumber"
+                      value={editedUser.contactNumber || ''}
+                      onChange={handleChange}
+                    />
+                  </label>
+                  <label>
+                    Food Safety Certification:
+                    <input
+                      type="text"
+                      name="foodSafetyCertification"
+                      value={editedUser.foodSafetyCert || ''}
+                      onChange={handleChange}
+                    />
+                  </label>
+                </>
+              ) : (
+                <>
+                  <h2>Name: {user.name}</h2>
+                  <p>Contact Person: {user.contactPerson}</p>
+                  <p>Contact Number: {user.contactNumber}</p>
+                  <p>Food Safety Certification: {user.foodSafetyCert}</p>
+                </>
+              )}
             </>
           ) : (
-            <>
-              <h2>Name: {user.name}</h2>
-              <p>Contact Person: {user.contactName}</p>
-              <p>Contact Number: {user.phone}</p>
-              <p>Certification: {user.certification}</p>
-            </>
+            <p>Loading user data...</p>
           )}
         </div>
       </div>
