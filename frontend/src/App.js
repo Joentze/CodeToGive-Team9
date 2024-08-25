@@ -24,7 +24,7 @@ import DonorProfile from "./pages/DonorProfile";
 import SignIn from './pages/signIn';
 
 import Onboarding from "./scenes/onboarding";
-
+import Donor from "./scenes/donor"
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -57,6 +57,7 @@ function App() {
               <Route path="/donorprofile" element={<DonorProfile />} />
 
               <Route path="/recipient-form" element={<RecipientForm />} />
+              <Route path="/donor" element={<Donor />} />
 
             </Routes>
           </main>

@@ -18,6 +18,7 @@ import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import MapOutlinedIcon from "@mui/icons-material/MapOutlined";
 import FoodBankIcon from "@mui/icons-material/FoodBank";
 import FBSG from "../../data/FBSG.png";
+import VolunteerActivismIcon from '@mui/icons-material/VolunteerActivism';
 
 const Item = ({ title, to, icon, selected, setSelected }) => {
   const theme = useTheme();
@@ -181,6 +182,13 @@ const Sidebar = () => {
               title="Calendar"
               to="/calendar"
               icon={<CalendarTodayOutlinedIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+            <Item
+              title="Food Donation"
+              to="/donor"
+              icon={<VolunteerActivismIcon />}
               selected={selected}
               setSelected={setSelected}
             />
