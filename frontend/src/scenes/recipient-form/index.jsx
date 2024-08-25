@@ -15,6 +15,8 @@ import Header from "../../components/Header";
 import { useTheme } from "@mui/material/styles";
 import { useState, useEffect } from "react";
 
+
+
 // Import Firestore functions
 import { addDoc, collection, getDocs, query, where } from "firebase/firestore";
 import { store, auth } from "../../firebase/base"; // Import your initialized Firestore database
@@ -72,7 +74,6 @@ const RecipientForm = () => {
       throw new Error("Unable to get coordinates from address");
     }
   };
-
   // Function to handle form submission
   const handleFormSubmit = async (values) => {
     setLoading(true);
@@ -102,6 +103,7 @@ const RecipientForm = () => {
           ...values.foodType,
           ...customFoodType.split(",").map((item) => item.trim()),
         ].filter(Boolean),
+        isMatched: false
       });
 
       alert("Request created successfully!");

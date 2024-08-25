@@ -72,7 +72,7 @@ const Matching = () => {
 
     return (
         <Box m="20px">
-            <Header title="Matching" subtitle="Here, you can get matches for food." />
+            <Header title="Matches" subtitle="Matches of all Donors and recipients." />
             <Box
                 m="40px 0 0 0"
                 height="75vh"
