@@ -14,10 +14,10 @@ import { Formik } from "formik";
 import * as yup from "yup";
 import Header from "../../components/Header";
 import { useTheme } from "@mui/material/styles";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import { addDoc, collection, getDocs, query, where } from "firebase/firestore";
-import { store } from "../../firebase/base";
+import { store, auth } from "../../firebase/base";
 
 const Donor = () => {
   const theme = useTheme();
@@ -27,6 +27,32 @@ const Donor = () => {
   const [customDietaryRestrictions, setCustomDietaryRestrictions] =
     useState("");
   const [customFoodType, setCustomFoodType] = useState("");
+  const [donorId, setDonorId] = useState(null);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      const currentUser = auth.currentUser;
+      if (currentUser) {
+        const uid = currentUser.uid;
+        console.log(uid);
+        const q = query(
+          collection(store, "donors"),
+          where("donorId", "==", uid)
+        );
+        const querySnapshot = await getDocs(q);
+
+        if (!querySnapshot.empty) {
+          const userDoc = querySnapshot.docs[0];
+          const fetchedDonorId = userDoc.id;
+          setDonorId(fetchedDonorId);
+        } else {
+          console.log("No such document!");
+        }
+      }
+    };
+
+    fetchUserData();
+  }, []);
 
   const getCoordinatesFromAddress = async (address) => {
     const apiKey = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
@@ -89,7 +115,7 @@ const Donor = () => {
 
   return (
     <Box m="20px">
-      <Header title="Submit Your Donation" />
+      <Header title="Create a New Donation" />
 
       <Formik
         onSubmit={handleFormSubmit}
@@ -334,29 +360,6 @@ const Donor = () => {
       </Formik>
     </Box>
   );
-};
-
-// Function to fetch donor id
-const fetchDonorId = async (email) => {
-  try {
-    const q = query(
-      collection(store, "donors"),
-      where("email", "==", email)
-    );
-    const querySnapshot = await getDocs(q);
-
-    if (!querySnapshot.empty) {
-      const donorData = querySnapshot.docs[0].data();
-      const donorId = querySnapshot.docs[0].id;
-      console.log("Donor ID:", donorId);
-      return donorId;
-    } else {
-      console.log("No matching donor found.");
-      return null;
-    }
-  } catch (error) {
-    console.error("Error fetching donor:", error);
-  }
 };
 
 // Define the validation schema
