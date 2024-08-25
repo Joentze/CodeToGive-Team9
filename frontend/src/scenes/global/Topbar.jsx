@@ -70,7 +70,11 @@ const Topbar = () => {
             <LightModeOutlinedIcon />
           )}
         </IconButton>
-        <IconButton>
+        <IconButton
+          component={Link}
+          to={"/notifications"}
+          title="Notifications"
+        >
           <NotificationsOutlinedIcon />
         </IconButton>
         <IconButton>
