@@ -12,6 +12,7 @@ const MatchDetails = ({ matchData }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        console.log(matchData);
         console.log(matchData.donorId, matchData.recipientId);
         donor = await getDonorById(matchData.donorId);
         recipient = await getRecipientById(matchData.recipientId);
@@ -55,18 +56,28 @@ const MatchDetails = ({ matchData }) => {
       <Box
         sx={{
           display: "flex",
-          flexDirection: "row",
+          flexWrap: "wrap",
           alignItems: "center",
           mt: 2, // Margin-top for spacing between rows
           "& .MuiTextField-root": {
             m: 1,
-            width: "100%",
+            width: "30%",
           },
         }}
       >
         {/* Add new components for the new row here */}
-        <TextField disabled label="New Field 1" defaultValue="Value 1" />
-        <TextField disabled label="New Field 2" defaultValue="Value 2" />
+        <TextField disabled label="Food Item" defaultValue={matchData.foodItem} />
+        <TextField disabled label="Quantity" defaultValue={matchData.quantity} />
+        <TextField disabled label="Family Size" defaultValue={matchData.familySize} />
+        <TextField disabled label="Can Cook" defaultValue={matchData.canCook ? "Yes" : "No"} />
+        <TextField disabled label="Can Reheat" defaultValue={matchData.canReheat ? "Yes" : "No"} />
+        <TextField disabled label="Has Fridge" defaultValue={matchData.hasFridge ? "Yes" : "No"} />
+        <TextField disabled label="Is Halal" defaultValue={matchData.isHalal ? "Yes" : "No"} />
+        <TextField disabled label="Is Perishable" defaultValue={matchData.isPerishable ? "Yes" : "No"} />
+        <TextField disabled label="Expiry Date" defaultValue={new Date(matchData.expiryDate.seconds * 1000).toLocaleDateString()} />
+        <TextField disabled label="Delivery Address" defaultValue={`Lat: ${matchData.location.latitude}, Long: ${matchData.location.longitude}`} />
+        <TextField disabled label="Pick-Up Address" defaultValue={`Lat: ${matchData.pickUpAddress.lat}, Long: ${matchData.pickUpAddress.long}`} />
+        <TextField disabled label="Status" defaultValue={matchData.status} />
       </Box>
     </Box>
   );
