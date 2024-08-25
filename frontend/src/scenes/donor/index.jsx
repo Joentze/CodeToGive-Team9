@@ -14,10 +14,11 @@ import { Formik } from "formik";
 import * as yup from "yup";
 import Header from "../../components/Header";
 import { useTheme } from "@mui/material/styles";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import { addDoc, collection, getDocs, query, where } from "firebase/firestore";
-import { store } from "../../firebase/base";
+import { store, auth } from "../../firebase/base";
+import { useNavigate } from "react-router-dom";
 
 const Donor = () => {
   const theme = useTheme();
@@ -27,6 +28,33 @@ const Donor = () => {
   const [customDietaryRestrictions, setCustomDietaryRestrictions] =
     useState("");
   const [customFoodType, setCustomFoodType] = useState("");
+  const [donorId, setDonorId] = useState(null);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      const currentUser = auth.currentUser;
+      if (currentUser) {
+        const uid = currentUser.uid;
+        console.log(uid);
+        const q = query(
+          collection(store, "donors"),
+          where("donorId", "==", uid)
+        );
+        const querySnapshot = await getDocs(q);
+
+        if (!querySnapshot.empty) {
+          const userDoc = querySnapshot.docs[0];
+          const fetchedDonorId = userDoc.id;
+          setDonorId(fetchedDonorId);
+        } else {
+          console.log("No such document!");
+        }
+      }
+    };
+
+    fetchUserData();
+  }, []);
 
   const getCoordinatesFromAddress = async (address) => {
     const apiKey = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
@@ -65,20 +93,22 @@ const Donor = () => {
       }
 
       await addDoc(collection(store, "donations"), {
+        donorId: donorId,
         expiryDate: values.expiryDate,
         foodItem: values.foodItem,
         foodType: values.foodType.map((item) => item.trim()),
-        isHalal: values.isHalal,
         isPerishable: values.isPerishable,
         quantity: values.quantity,
         pickUpAddress: {
           latitude,
           longitude,
         },
-        // dietaryRestrictions: values.dietaryRestrictions.map((item) => item.trim()),
+        dietaryRestrictions: values.dietaryRestrictions.map((item) => item.trim()),
+        isMatched: false,
       });
 
       alert("Donation request created successfully!");
+      navigate("/matching");
     } catch (error) {
       console.error("Error adding document for donation: ", error);
       setError("Error creating donation request!");
@@ -89,7 +119,7 @@ const Donor = () => {
 
   return (
     <Box m="20px">
-      <Header title="Submit Your Donation" />
+      <Header title="Create a New Donation" />
 
       <Formik
         onSubmit={handleFormSubmit}
@@ -212,26 +242,6 @@ const Donor = () => {
                   color: isDarkMode ? "white" : "black",
                 }}
               />
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={values.isHalal}
-                    onChange={handleChange}
-                    name="isHalal"
-                    color={isDarkMode ? "default" : "primary"}
-                    sx={{
-                      "& .MuiSvgIcon-root": {
-                        color: isDarkMode ? "white" : "default",
-                      },
-                    }}
-                  />
-                }
-                label="Halal"
-                sx={{
-                  gridColumn: "span 2",
-                  color: isDarkMode ? "white" : "black",
-                }}
-              />
               <TextField
                 fullWidth
                 variant="filled"
@@ -246,7 +256,7 @@ const Donor = () => {
                 InputLabelProps={{ shrink: true }}
                 sx={{ gridColumn: "span 4" }}
               />
-               {/* <FormControl
+               <FormControl
                 fullWidth
                 variant="filled"
                 sx={{ gridColumn: "span 4" }}
@@ -274,7 +284,7 @@ const Donor = () => {
                   renderValue={(selected) => selected.join(", ")}
                   label="Dietary Restrictions"
                 >
-                  {["None", "Halal", "Vegetarian", "Gluten-free", "Nut-free", "Dairy-free", "Others"].map((restriction) => (
+                  {["None", "Halal", "Gluten-free", "Nut-free", "Dairy-free", "Others"].map((restriction) => (
                   <MenuItem key={restriction} value={restriction}>
                     <Checkbox
                       checked={values.dietaryRestrictions.indexOf(restriction) > -1}
@@ -308,7 +318,7 @@ const Donor = () => {
                     sx={{ mt: "10px" }}
                   />
                 )}
-              </FormControl> */}
+              </FormControl>
               <TextField
                 fullWidth
                 variant="filled"
@@ -336,29 +346,6 @@ const Donor = () => {
   );
 };
 
-// Function to fetch donor id
-const fetchDonorId = async (email) => {
-  try {
-    const q = query(
-      collection(store, "donors"),
-      where("email", "==", email)
-    );
-    const querySnapshot = await getDocs(q);
-
-    if (!querySnapshot.empty) {
-      const donorData = querySnapshot.docs[0].data();
-      const donorId = querySnapshot.docs[0].id;
-      console.log("Donor ID:", donorId);
-      return donorId;
-    } else {
-      console.log("No matching donor found.");
-      return null;
-    }
-  } catch (error) {
-    console.error("Error fetching donor:", error);
-  }
-};
-
 // Define the validation schema
 const checkoutSchema = yup.object().shape({
   expiryDate: yup.date(),
@@ -366,9 +353,8 @@ const checkoutSchema = yup.object().shape({
   quantity: yup.number().required("required"),
   isPerishable: yup.boolean().required("required"),
   pickUpAddress: yup.string().required("required"),
-  // dietaryRestrictions: yup.array().min(1, "At least one restriction is required"),
+  dietaryRestrictions: yup.array().min(1, "At least one restriction is required"),
   foodType: yup.array().min(1, "At least one food type is required"),
-  isHalal: yup.boolean().required("required"),
 });
 
 // Define the initial form values
@@ -377,10 +363,9 @@ const initialValues = {
   foodItem: "",
   quantity: 0,
   pickUpAddress: "",
-  // dietaryRestrictions: [],
+  dietaryRestrictions: [],
   foodType: [],
   isPerishable: false,
-  isHalal: false,
 };
 
 export default Donor;

@@ -13,31 +13,43 @@ const PastRequests = () => {
       try {
         const currentUser = auth.currentUser;
         if (currentUser) {
-          const recipientId = currentUser.uid;
-          const q = query(
-            collection(store, 'foodRequests'),
-            where('recipientID', '==', recipientId)
+          const recipientQuery = query(
+            collection(store, 'recipients'),
+            where('recipientId', '==', currentUser.uid)
           );
-          const querySnapshot = await getDocs(q);
+          const querySnapshot = await getDocs(recipientQuery);
 
-          const fetchedRequests = querySnapshot.docs.map((doc) => {
-            const data = doc.data();
-            return {
-              id: doc.id,
-              dateOfRequest: data.dateOfRequest || new Date(), // Default to current date if missing
-              receivedAt: data.receivedAt || new Date(), // Default to current date if missing
-              foodType: data.foodType || 'Unknown',
-              canCook: data.canCook ?? false,
-              canReheat: data.canReheat ?? false,
-              hasFridge: data.hasFridge ?? false,
-              familySize: data.familySize ?? 'Unknown',
-              dietaryRestrictions: Array.isArray(data.dietaryRestrictions) ? data.dietaryRestrictions : [],
-              deliveryAddress: data.deliveryAddress || { lat: 'N/A', long: 'N/A' }, // Default values
-              zipCode: data.zipCode || 'N/A', // Default value
-            };
-          });
+          if (!querySnapshot.empty) {
+            const userDoc = querySnapshot.docs[0]; // Get the first document
+            const fetchedRecipientId = userDoc.id; // Use the document ID as recipientId
 
-          setRequests(fetchedRequests);
+            const requestsQuery = query(
+              collection(store, 'foodRequests'),
+              where('recipientId', '==', fetchedRecipientId)
+            );
+            const requestsSnapshot = await getDocs(requestsQuery);
+
+            const fetchedRequests = requestsSnapshot.docs.map((doc) => {
+              const data = doc.data();
+              return {
+                id: doc.id,
+                dateOfRequest: data.dateOfRequest || new Date(), // Default to current date if missing
+                receivedAt: data.receivedAt || new Date(), // Default to current date if missing
+                foodType: data.foodType || 'Unknown',
+                canCook: data.canCook ?? false,
+                canReheat: data.canReheat ?? false,
+                hasFridge: data.hasFridge ?? false,
+                familySize: data.familySize ?? 'Unknown',
+                dietaryRestrictions: Array.isArray(data.dietaryRestrictions) ? data.dietaryRestrictions : [],
+                deliveryAddress: data.deliveryAddress || { lat: 'N/A', long: 'N/A' }, // Default values
+                zipCode: data.zipCode || 'N/A', // Default value
+              };
+            });
+
+            setRequests(fetchedRequests);
+          } else {
+            setError("Recipient not found.");
+          }
         }
       } catch (error) {
         console.error("Error fetching requests:", error);
@@ -52,28 +64,33 @@ const PastRequests = () => {
 
   // Helper function to format the date to month/date and time in 12-hour format
   const formatDate = (timestamp) => {
+    let date;
+    
+    // Check if timestamp is a Firestore Timestamp object
     if (timestamp?.toDate) {
-      const date = timestamp.toDate();
-      const options = {
-        month: 'short',
-        day: 'numeric',
-        hour: 'numeric',
-        minute: 'numeric',
-        hour12: true,
-      };
-      return new Intl.DateTimeFormat('en-US', options).format(date);
+      date = timestamp.toDate();
     } else if (timestamp instanceof Date) {
-      const options = {
-        month: 'short',
-        day: 'numeric',
-        hour: 'numeric',
-        minute: 'numeric',
-        hour12: true,
-      };
-      return new Intl.DateTimeFormat('en-US', options).format(timestamp);
+      date = timestamp;
+    } else if (typeof timestamp === 'string' && !isNaN(Date.parse(timestamp))) {
+      // If timestamp is a string and can be parsed into a Date object
+      date = new Date(timestamp);
+    } else {
+      // If timestamp is neither, return it as is
+      return timestamp;
     }
-    return timestamp; // Handle as string or other format
+  
+    // Format the date
+    const options = {
+      month: 'short',
+      day: 'numeric',
+      hour: 'numeric',
+      minute: 'numeric',
+      hour12: true,
+    };
+  
+    return new Intl.DateTimeFormat('en-US', options).format(date);
   };
+  
 
   if (loading) {
     return <p>Loading requests...</p>;
