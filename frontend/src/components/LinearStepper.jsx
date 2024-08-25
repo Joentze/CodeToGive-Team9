@@ -5,8 +5,30 @@ import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
+import { styled } from '@mui/material/styles';
 
 const steps = ['Food Collected', 'Delivery in Progress', 'Food Delivered'];
+
+const CustomStepIconRoot = styled('div')(({ theme, ownerState }) => ({
+  color: ownerState.active ? '#fff' : '#fff',
+  backgroundColor: ownerState.active ? '#9e9e9e' : '#5A5A5A' ,
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  width: 24,
+  height: 24,
+  borderRadius: '50%',
+}));
+
+
+function CustomStepIcon(props) {
+  const { active, completed, className } = props;
+  return (
+    <CustomStepIconRoot ownerState={{ completed, active, icon: props.icon }} className={className}>
+      <Typography color="inherit">{props.icon}</Typography>
+    </CustomStepIconRoot>
+  );
+}
 
 export default function LinearStepper() {
   const [activeStep, setActiveStep] = React.useState(0);
@@ -32,7 +54,13 @@ export default function LinearStepper() {
   
           return (
             <Step key={label} {...stepProps}>
-              <StepLabel {...labelProps}>{label}</StepLabel>
+              <StepLabel
+              StepIconComponent={(props) => (
+                <CustomStepIcon {...props} icon={index + 1} active={activeStep === index} />
+              )}
+            >
+              {label}
+            </StepLabel>
             </Step>
           );
         })}
