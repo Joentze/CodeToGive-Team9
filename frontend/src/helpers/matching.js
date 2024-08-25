@@ -1,27 +1,5 @@
 import munkres from "munkres-js";
-import { store } from "../firebase/base.js";
-import { getDocs, collection } from "firebase/firestore";
-
-async function getData() {
-  const donationsCollection = collection(store, "donations");
-  const requestsCollection = collection(store, "foodRequests");
-
-  let donations = []; 
-  let requests = [];
-
-  try {
-    const donationsData = await getDocs(donationsCollection);
-    donations = donationsData.docs.map((doc) => doc.data());
-
-    const requestsData = await getDocs(requestsCollection);
-    requests = requestsData.docs.map((doc) => doc.data());
-    
-  } catch (err) {
-    console.error(err);
-  }
-
-  return { donations, requests };
-}
+import { getData, storeMatchData } from "../firebase/match";
 
 // Implement geolocation distance calculation
 function calculateDistance(pickUpAddress, deliveryAddress) {
@@ -101,32 +79,37 @@ export async function findOptimalAssignments() {
   const { donations, requests } = await getData();
   console.log(donations, requests);
 
-  const costMatrix = createCostMatrix(donations, requests);
+  const costMatrix = createCostMatrix(donations.slice(0,5), requests.slice(0,5));
   const result = munkres(costMatrix);
 
-  const matches = [];
+  console.log("done")
+  // const matches = [];
 
-  for (const [donorIndex, requestIndex] of result) {
-    if (requestIndex < requests.length) {
-      const donor = donations[donorIndex];
-      const request = requests[requestIndex];
-      matches.push({
-        donorId: donor.donorID,
-        foodItem: donor.foodItem,
-        quantity: donor.quantity,
-        expiryDate: donor.expiryDate,
-        isHalal: donor.isHalal,
-        isPerishable: donor.isPerishable,
-        pickUpAddress: donor.pickUpAddress,
-        recipientId: request.recipientID,
-        familySize: request.familySize,
-        canCook: request.canCook,
-        canReheat: request.canReheat,
-        hasFridge: request.hasFridge,
-        deliveryAddress: request.deliveryAddress
-      });
-    }
-  }
+  // for (const [donorIndex, requestIndex] of result) {
+  //   if (requestIndex < requests.length) {
+  //     const donor = donations[donorIndex];
+  //     const request = requests[requestIndex];
+  //      let match = {
+  //       donorId: donor.donorID,
+  //       foodItem: donor.foodItem,
+  //       quantity: donor.quantity,
+  //       expiryDate: donor.expiryDate,
+  //       isHalal: donor.isHalal,
+  //       isPerishable: donor.isPerishable,
+  //       pickUpAddress: donor.pickUpAddress,
+  //       recipientId: request.recipientID,
+  //       familySize: request.familySize,
+  //       canCook: request.canCook,
+  //       canReheat: request.canReheat,
+  //       hasFridge: request.hasFridge,
+  //       deliveryAddress: request.deliveryAddress,
+  //       status: "Match Successful"
+  //     };
 
-  console.log(matches);
+  //     matches.push(match);
+  //     storeMatchData(match);
+  //   }
+  // }
+
+  // console.log(matches);
 }

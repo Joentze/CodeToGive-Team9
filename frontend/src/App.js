@@ -24,6 +24,7 @@ import DonorProfile from "./pages/DonorProfile";
 import SignIn from './pages/signIn';
 
 import Onboarding from "./scenes/onboarding";
+import Tracking from "./scenes/tracking";
 
 
 function App() {
@@ -50,7 +51,7 @@ function App() {
               <Route path="/pie" element={<Pie />} />
               <Route path="/line" element={<Line />} />
               <Route path="/faq" element={<FAQ />} />
-              <Route path="/calendar" element={<Calendar />} />
+              <Route path="/tracking" element={<Tracking />} />
               <Route path="/geography" element={<Geography />} />
 
               <Route path="/profile" element={<RecipientProfile />} />
