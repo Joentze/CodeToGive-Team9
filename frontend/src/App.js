@@ -21,10 +21,10 @@ import Calendar from "./scenes/calendar/calendar";
 import RecipientProfile from "./pages/RecipientProfile";
 import DonorProfile from "./pages/DonorProfile";
 
-import SignIn from './pages/signIn';
+import SignIn from "./pages/signIn";
 
 import Onboarding from "./scenes/onboarding";
-import Donor from "./scenes/donor"
+import Donor from "./scenes/donor";
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -49,7 +49,7 @@ function App() {
               <Route path="/bar" element={<Bar />} />
               <Route path="/pie" element={<Pie />} />
               <Route path="/line" element={<Line />} />
-              <Route path="/faq" element={<FAQ />} />
+              <Route path="/feedback" element={<FAQ />} />
               <Route path="/calendar" element={<Calendar />} />
               <Route path="/geography" element={<Geography />} />
 
@@ -58,7 +58,6 @@ function App() {
 
               <Route path="/recipient-form" element={<RecipientForm />} />
               <Route path="/donor" element={<Donor />} />
-
             </Routes>
           </main>
         </div>
