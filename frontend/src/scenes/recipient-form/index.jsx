@@ -8,12 +8,15 @@ import {
 import { Formik } from "formik";
 import * as yup from "yup";
 import Header from "../../components/Header";
+import { useTheme } from "@mui/material/styles";
 
 // Import Firestore functions
-import { addDoc, collection } from "firebase/firestore";
+import { addDoc, collection, getDocs, query, where } from "firebase/firestore";
 import { store } from "../../firebase/base"; // Import your initialized Firestore database
 
 const RecipientForm = () => {
+  const theme = useTheme();
+  const isDarkMode = theme.palette.mode === "dark";
   // Function to handle form submission
   const handleFormSubmit = async (values) => {
     try {
@@ -113,11 +116,19 @@ const RecipientForm = () => {
                     checked={values.canCook}
                     onChange={handleChange}
                     name="canCook"
-                    color="primary"
+                    color={isDarkMode ? "default" : "primary"}
+                    sx={{
+                      "& .MuiSvgIcon-root": {
+                        color: isDarkMode ? "white" : "default",
+                      },
+                    }}
                   />
                 }
                 label="Can Cook"
-                sx={{ gridColumn: "span 1" }}
+                sx={{
+                  gridColumn: "span 1",
+                  color: isDarkMode ? "white" : "black",
+                }}
               />
               <FormControlLabel
                 control={
@@ -125,11 +136,19 @@ const RecipientForm = () => {
                     checked={values.canReheat}
                     onChange={handleChange}
                     name="canReheat"
-                    color="primary"
+                    color={isDarkMode ? "default" : "primary"}
+                    sx={{
+                      "& .MuiSvgIcon-root": {
+                        color: isDarkMode ? "white" : "default",
+                      },
+                    }}
                   />
                 }
                 label="Can Reheat"
-                sx={{ gridColumn: "span 1" }}
+                sx={{
+                  gridColumn: "span 1",
+                  color: isDarkMode ? "white" : "black",
+                }}
               />
               <FormControlLabel
                 control={
@@ -137,11 +156,19 @@ const RecipientForm = () => {
                     checked={values.hasFridge}
                     onChange={handleChange}
                     name="hasFridge"
-                    color="primary"
+                    color={isDarkMode ? "default" : "primary"}
+                    sx={{
+                      "& .MuiSvgIcon-root": {
+                        color: isDarkMode ? "white" : "default",
+                      },
+                    }}
                   />
                 }
                 label="Has Fridge"
-                sx={{ gridColumn: "span 1" }}
+                sx={{
+                  gridColumn: "span 1",
+                  color: isDarkMode ? "white" : "black",
+                }}
               />
               <TextField
                 fullWidth
