@@ -11,7 +11,6 @@ The goal of our project is to build a platform that supports food banks and othe
 
 - **Donor Management**: Streamlined onboarding for small and large-scale donors, enabling food donations through the platform.
 - **Real-Time Inventory Tracking**: Monitor food donations and distributions in real-time.
-- **Geographical Analysis**: Visualize donation and distribution patterns using interactive maps.
 - **Impact Dashboard**: Track and report metrics like families reached and total donations.
 
 ## Tech Stack
