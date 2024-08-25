@@ -18,6 +18,7 @@ import { useState, useEffect } from "react";
 
 import { addDoc, collection, getDocs, query, where } from "firebase/firestore";
 import { store, auth } from "../../firebase/base";
+import { useNavigate } from "react-router-dom";
 
 const Donor = () => {
   const theme = useTheme();
@@ -28,6 +29,7 @@ const Donor = () => {
     useState("");
   const [customFoodType, setCustomFoodType] = useState("");
   const [donorId, setDonorId] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -106,6 +108,7 @@ const Donor = () => {
       });
 
       alert("Donation request created successfully!");
+      navigate("/matching");
     } catch (error) {
       console.error("Error adding document for donation: ", error);
       setError("Error creating donation request!");
