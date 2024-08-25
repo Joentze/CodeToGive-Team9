@@ -31,6 +31,8 @@ import PastRequests from "./scenes/recipient/PastRequests";
 
 import MatchNotification from './components/MatchNotification';
 
+import Matching from "./scenes/matching";
+
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -68,7 +70,7 @@ function App() {
               <Route path="/recipient-form" element={<RecipientForm />} />
               <Route path="/pastrequests" element={<PastRequests />} />
               <Route path="/notifications" element={<MatchNotification />} />
-
+              <Route path="/matching" element={<Matching />} />
             </Routes>
           </main>
         </div>
