@@ -22,24 +22,42 @@ import { store } from "../../firebase/base"; // Import your initialized Firestor
 const RecipientForm = () => {
   const theme = useTheme();
   const isDarkMode = theme.palette.mode === "dark";
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
   const [customDietaryRestrictions, setCustomDietaryRestrictions] =
     useState("");
   const [customFoodType, setCustomFoodType] = useState("");
 
+  const getCoordinatesFromAddress = async (address) => {
+    const apiKey = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
+    const response = await fetch(
+      `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
+        address
+      )}&key=${apiKey}`
+    );
+    const data = await response.json();
+
+    if (data.status === "OK" && data.results.length > 0) {
+      const location = data.results[0].geometry.location;
+      return {
+        latitude: location.lat,
+        longitude: location.lng,
+      };
+    } else {
+      throw new Error("Unable to get coordinates from address");
+    }
+  };
+
   // Function to handle form submission
   const handleFormSubmit = async (values) => {
-    const dietaryRestrictions =
-      values.dietaryRestrictions === "others"
-        ? customDietaryRestrictions.split(",").map((item) => item.trim())
-        : values.dietaryRestrictions.split(",").map((item) => item.trim());
-
-    const foodType =
-      values.foodType === "others"
-        ? customFoodType.split(",").map((item) => item.trim())
-        : values.foodType.split(",").map((item) => item.trim());
+    setLoading(true);
+    setError("");
 
     try {
-      // Add a new document in the "requests" collection
+      const { latitude, longitude } = await getCoordinatesFromAddress(
+        values.address
+      );
+
       await addDoc(collection(store, "foodRequests"), {
         dateOfRequest: values.dateOfRequest,
         receivedAt: values.receivedAt,
@@ -48,17 +66,21 @@ const RecipientForm = () => {
         canReheat: values.canReheat,
         hasFridge: values.hasFridge,
         location: {
-          latitude: values.latitude,
-          longitude: values.longitude,
+          latitude,
+          longitude,
         },
-        dietaryRestrictions,
-        foodType,
+        dietaryRestrictions: values.dietaryRestrictions
+          .split(",")
+          .map((item) => item.trim()),
+        foodType: values.foodType.split(",").map((item) => item.trim()),
       });
 
       alert("Request created successfully!");
     } catch (error) {
       console.error("Error adding document: ", error);
-      alert("Error creating request!");
+      setError("Error creating request!");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -191,27 +213,14 @@ const RecipientForm = () => {
                 fullWidth
                 variant="filled"
                 type="text"
-                label="Latitude"
+                label="Address"
                 onBlur={handleBlur}
                 onChange={handleChange}
-                value={values.latitude}
-                name="latitude"
-                error={!!touched.latitude && !!errors.latitude}
-                helperText={touched.latitude && errors.latitude}
-                sx={{ gridColumn: "span 2" }}
-              />
-              <TextField
-                fullWidth
-                variant="filled"
-                type="text"
-                label="Longitude"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.longitude}
-                name="longitude"
-                error={!!touched.longitude && !!errors.longitude}
-                helperText={touched.longitude && errors.longitude}
-                sx={{ gridColumn: "span 2" }}
+                value={values.address}
+                name="address"
+                error={!!touched.address && !!errors.address}
+                helperText={touched.address && errors.address}
+                sx={{ gridColumn: "span 4" }}
               />
               <FormControl
                 fullWidth
@@ -344,8 +353,7 @@ const checkoutSchema = yup.object().shape({
   canCook: yup.boolean().required("required"),
   canReheat: yup.boolean().required("required"),
   hasFridge: yup.boolean().required("required"),
-  latitude: yup.number().required("required"),
-  longitude: yup.number().required("required"),
+  address: yup.string().required("required"),
   dietaryRestrictions: yup.string().required("required"),
   foodType: yup.string().required("required"),
 });
@@ -358,8 +366,7 @@ const initialValues = {
   canCook: false,
   canReheat: false,
   hasFridge: false,
-  latitude: "",
-  longitude: "",
+  address: "",
   dietaryRestrictions: "",
   foodType: "",
 };
