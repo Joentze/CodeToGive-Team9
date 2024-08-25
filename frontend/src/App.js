@@ -1,5 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
+import { auth, store } from "./firebase/base";
+import { collection, query, where, getDocs } from "firebase/firestore";
 import Topbar from "./scenes/global/Topbar";
 import Sidebar from "./scenes/global/Sidebar";
 import Dashboard from "./scenes/dashboard";
@@ -24,11 +26,23 @@ import DonorProfile from "./pages/DonorProfile";
 import SignIn from "./pages/signIn";
 
 import Onboarding from "./scenes/onboarding";
+
+
+import PastRequests from "./scenes/recipient/PastRequests";
+
+import MatchNotification from './components/MatchNotification';
+
+import Matching from "./scenes/matching";
+
+
 import Donor from "./scenes/donor";
+
 
 function App() {
   const [theme, colorMode] = useMode();
   const [isSidebar, setIsSidebar] = useState(true);
+ 
+
 
   return (
     <ColorModeContext.Provider value={colorMode}>
@@ -38,6 +52,7 @@ function App() {
           <Sidebar isSidebar={isSidebar} />
           <main className="content">
             <Topbar setIsSidebar={setIsSidebar} />
+            
             <Routes>
               <Route path="/" element={<Dashboard />} />
               <Route path="/dashboard" element={<AdminDashboard />} />
@@ -57,7 +72,13 @@ function App() {
               <Route path="/donorprofile" element={<DonorProfile />} />
 
               <Route path="/recipient-form" element={<RecipientForm />} />
+
+              <Route path="/pastrequests" element={<PastRequests />} />
+              <Route path="/notifications" element={<MatchNotification />} />
+              <Route path="/matching" element={<Matching />} />
+
               <Route path="/donor" element={<Donor />} />
+
             </Routes>
           </main>
         </div>

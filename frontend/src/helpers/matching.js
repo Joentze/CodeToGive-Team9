@@ -2,7 +2,7 @@ import munkres from "munkres-js";
 import { store } from "../firebase/base.js";
 import { getDocs, collection } from "firebase/firestore";
 
-async function getData() {
+async function getUnMatchedData() {
   const donationsCollection = collection(store, "donations");
   const requestsCollection = collection(store, "foodRequests");
 
@@ -98,10 +98,10 @@ function createCostMatrix(donations, requests) {
 }
 
 export async function findOptimalAssignments() {
-  const { donations, requests } = await getData();
+  const { donations, requests } = await getUnMatchedData();
   console.log(donations, requests);
 
-  const costMatrix = createCostMatrix(donations, requests);
+  const costMatrix = createCostMatrix(donations.slice(0,8), requests.slice(0,10));
   const result = munkres(costMatrix);
 
   const matches = [];
