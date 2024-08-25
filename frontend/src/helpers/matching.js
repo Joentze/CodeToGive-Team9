@@ -79,37 +79,38 @@ export async function findOptimalAssignments() {
   const { donations, requests } = await getData();
   console.log(donations, requests);
 
-  const costMatrix = createCostMatrix(donations.slice(0,5), requests.slice(0,5));
+  const costMatrix = createCostMatrix(donations.slice(0,8), requests.slice(0,10));
   const result = munkres(costMatrix);
 
-  console.log("done")
-  // const matches = [];
+  const matches = [];
 
-  // for (const [donorIndex, requestIndex] of result) {
-  //   if (requestIndex < requests.length) {
-  //     const donor = donations[donorIndex];
-  //     const request = requests[requestIndex];
-  //      let match = {
-  //       donorId: donor.donorID,
-  //       foodItem: donor.foodItem,
-  //       quantity: donor.quantity,
-  //       expiryDate: donor.expiryDate,
-  //       isHalal: donor.isHalal,
-  //       isPerishable: donor.isPerishable,
-  //       pickUpAddress: donor.pickUpAddress,
-  //       recipientId: request.recipientID,
-  //       familySize: request.familySize,
-  //       canCook: request.canCook,
-  //       canReheat: request.canReheat,
-  //       hasFridge: request.hasFridge,
-  //       deliveryAddress: request.deliveryAddress,
-  //       status: "Match Successful"
-  //     };
+  for (const [donorIndex, requestIndex] of result) {
+    if (requestIndex < requests.length) {
+      const donor = donations[donorIndex];
+      const request = requests[requestIndex];
+       let match = {
+        donorId: donor.donorID,
+        foodItem: donor.foodItem,
+        quantity: donor.quantity,
+        expiryDate: donor.expiryDate,
+        isHalal: donor.isHalal,
+        isPerishable: donor.isPerishable,
+        pickUpAddress: donor.pickUpAddress,
+        recipientId: request.recipientID,
+        familySize: request.familySize,
+        canCook: request.canCook,
+        canReheat: request.canReheat,
+        hasFridge: request.hasFridge,
+        deliveryAddress: request.deliveryAddress,
+        status: "Match Successful"
+      };
 
-  //     matches.push(match);
-  //     storeMatchData(match);
-  //   }
-  // }
+      matches.push(match);
+      storeMatchData(match);
+    }
+  }
 
-  // console.log(matches);
+  console.log(matches);
+
+  return result
 }
