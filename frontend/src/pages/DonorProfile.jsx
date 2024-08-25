@@ -75,7 +75,7 @@ const DonorProfile = () => {
           ) : (
             <>
               <h2>Name: {user.name}</h2>
-              <p>Contact Person: {user.email}</p>
+              <p>Contact Person: {user.contactName}</p>
               <p>Contact Number: {user.phone}</p>
               <p>Certification: {user.certification}</p>
             </>
