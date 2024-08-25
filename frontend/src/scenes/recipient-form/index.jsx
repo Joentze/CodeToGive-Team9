@@ -4,11 +4,16 @@ import {
   TextField,
   Checkbox,
   FormControlLabel,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
 } from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
 import Header from "../../components/Header";
 import { useTheme } from "@mui/material/styles";
+import { useState } from "react";
 
 // Import Firestore functions
 import { addDoc, collection, getDocs, query, where } from "firebase/firestore";
@@ -17,8 +22,22 @@ import { store } from "../../firebase/base"; // Import your initialized Firestor
 const RecipientForm = () => {
   const theme = useTheme();
   const isDarkMode = theme.palette.mode === "dark";
+  const [customDietaryRestrictions, setCustomDietaryRestrictions] =
+    useState("");
+  const [customFoodType, setCustomFoodType] = useState("");
+
   // Function to handle form submission
   const handleFormSubmit = async (values) => {
+    const dietaryRestrictions =
+      values.dietaryRestrictions === "others"
+        ? customDietaryRestrictions.split(",").map((item) => item.trim())
+        : values.dietaryRestrictions.split(",").map((item) => item.trim());
+
+    const foodType =
+      values.foodType === "others"
+        ? customFoodType.split(",").map((item) => item.trim())
+        : values.foodType.split(",").map((item) => item.trim());
+
     try {
       // Add a new document in the "requests" collection
       await addDoc(collection(store, "foodRequests"), {
@@ -32,10 +51,8 @@ const RecipientForm = () => {
           latitude: values.latitude,
           longitude: values.longitude,
         },
-        dietaryRestrictions: values.dietaryRestrictions
-          .split(",")
-          .map((item) => item.trim()),
-        foodType: values.foodType.split(",").map((item) => item.trim()),
+        dietaryRestrictions,
+        foodType,
       });
 
       alert("Request created successfully!");
@@ -196,36 +213,91 @@ const RecipientForm = () => {
                 helperText={touched.longitude && errors.longitude}
                 sx={{ gridColumn: "span 2" }}
               />
-              <TextField
+              <FormControl
                 fullWidth
                 variant="filled"
-                type="text"
-                label="Dietary Restrictions (comma-separated)"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.dietaryRestrictions}
-                name="dietaryRestrictions"
-                error={
-                  !!touched.dietaryRestrictions && !!errors.dietaryRestrictions
-                }
-                helperText={
-                  touched.dietaryRestrictions && errors.dietaryRestrictions
-                }
                 sx={{ gridColumn: "span 4" }}
-              />
-              <TextField
+              >
+                <InputLabel id="dietaryRestrictions-label">
+                  Dietary Restrictions
+                </InputLabel>
+                <Select
+                  labelId="dietaryRestrictions-label"
+                  value={values.dietaryRestrictions}
+                  name="dietaryRestrictions"
+                  onChange={(e) => {
+                    const { value } = e.target;
+                    handleChange(e);
+                    if (value === "others") {
+                      setCustomDietaryRestrictions(""); // Clear custom input when selecting "Others"
+                    }
+                  }}
+                  onBlur={handleBlur}
+                  error={
+                    !!touched.dietaryRestrictions &&
+                    !!errors.dietaryRestrictions
+                  }
+                  label="Dietary Restrictions"
+                >
+                  <MenuItem value="none">None</MenuItem>
+                  <MenuItem value="gluten-free">Gluten Free</MenuItem>
+                  <MenuItem value="nut-free">Nut Free</MenuItem>
+                  <MenuItem value="dairy-free">Dairy Free</MenuItem>
+                  <MenuItem value="others">Others</MenuItem>
+                </Select>
+                {values.dietaryRestrictions === "others" && (
+                  <TextField
+                    fullWidth
+                    variant="filled"
+                    type="text"
+                    label="Specify Dietary Restrictions (comma-separated)"
+                    value={customDietaryRestrictions}
+                    onChange={(e) =>
+                      setCustomDietaryRestrictions(e.target.value)
+                    }
+                    sx={{ mt: "10px" }}
+                  />
+                )}
+              </FormControl>
+              <FormControl
                 fullWidth
                 variant="filled"
-                type="text"
-                label="Food Type (comma-separated)"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.foodType}
-                name="foodType"
-                error={!!touched.foodType && !!errors.foodType}
-                helperText={touched.foodType && errors.foodType}
                 sx={{ gridColumn: "span 4" }}
-              />
+              >
+                <InputLabel id="foodType-label">Food Type</InputLabel>
+                <Select
+                  labelId="foodType-label"
+                  value={values.foodType}
+                  name="foodType"
+                  onChange={(e) => {
+                    const { value } = e.target;
+                    handleChange(e);
+                    if (value === "others") {
+                      setCustomFoodType(""); // Clear custom input when selecting "Others"
+                    }
+                  }}
+                  onBlur={handleBlur}
+                  error={!!touched.foodType && !!errors.foodType}
+                  label="Food Type"
+                >
+                  <MenuItem value="vegetarian">Vegetarian</MenuItem>
+                  <MenuItem value="vegan">Vegan</MenuItem>
+                  <MenuItem value="halal">Halal</MenuItem>
+                  <MenuItem value="kosher">Kosher</MenuItem>
+                  <MenuItem value="others">Others</MenuItem>
+                </Select>
+                {values.foodType === "others" && (
+                  <TextField
+                    fullWidth
+                    variant="filled"
+                    type="text"
+                    label="Specify Food Type (comma-separated)"
+                    value={customFoodType}
+                    onChange={(e) => setCustomFoodType(e.target.value)}
+                    sx={{ mt: "10px" }}
+                  />
+                )}
+              </FormControl>
             </Box>
             <Box display="flex" justifyContent="end" mt="20px">
               <Button type="submit" color="secondary" variant="contained">
