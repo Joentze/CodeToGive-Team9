@@ -1,52 +1,44 @@
-import * as React from 'react';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import Typography from '@mui/material/Typography';
-import Button from '@mui/material/Button';
+import React from 'react';
 import { useTheme } from '@mui/material';
+import { Box } from '@mui/material';
+import { tokens } from '../theme';
+import './MatchNotification.css'; // Create or update this CSS file for custom styles
 
-import { Box,  IconButton } from "@mui/material";
-
-import { tokens } from "../theme";
-
-import StatBox from "./StatBox";
-
-
-
-
-
-export default function FoodSource() {
+const FoodSource = () => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
 
     return (
-        <Box
-            gridColumn="span 3"
-            backgroundColor={colors.primary[400]}
-            display="flex"
-            alignItems="center"
-            justifyContent="center"
-        >
+        <div className="food-source-page">
+            
             <Box
-                display="grid"
-                gridTemplateColumns="repeat(12, 1fr)"
-                gridAutoRows="140px"
-                gap="20px"
+                gridColumn="span 3"
+                backgroundColor={colors.primary[400]}
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
             >
-                
-                
-                {/* ROW 1 */}
                 <Box
-                    gridColumn="span 3"
-                    backgroundColor={colors.primary[400]}
-                    display="flex"
-                    alignItems="center"
-                    justifyContent="center"
-                >     
-                  
+                    display="grid"
+                    gridTemplateColumns="repeat(12, 1fr)"
+                    gridAutoRows="140px"
+                    gap="20px"
+                >
+                    {/* ROW 1 */}
+                    <Box
+                        gridColumn="span 3"
+                        backgroundColor={colors.primary[400]}
+                        display="flex"
+                        alignItems="center"
+                        justifyContent="center"
+                    >
+                        {/* Content for the first box */}
+                        
+                    </Box>
                 </Box>
-           
             </Box>
-        </Box>
+        </div>
     );
-}
+};
+
+export default FoodSource;
