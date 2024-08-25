@@ -1,5 +1,5 @@
 import { Box, IconButton, useTheme } from "@mui/material";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { ColorModeContext, tokens } from "../../theme";
 import InputBase from "@mui/material/InputBase";
 import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
@@ -9,11 +9,43 @@ import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
 import SearchIcon from "@mui/icons-material/Search";
 import { Link } from "react-router-dom";
+import { auth, store} from "../../firebase/base";
+import { collection, where, query, getDocs } from "firebase/firestore";
 
 const Topbar = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const colorMode = useContext(ColorModeContext);
+  const [userType, setUserType] = useState(null);
+
+  useEffect(() => {
+    const fetchUserType = async () => {
+      const currentUser = auth.currentUser;
+      if (currentUser) {
+        const uid = currentUser.uid;
+
+        // Query Firestore for the user's type
+        const recipientQuery = query(collection(store, 'recipients'), where('recipientId', '==', uid));
+        const recipientSnapshot = await getDocs(recipientQuery);
+
+        if (!recipientSnapshot.empty) {
+          setUserType("recipient");
+        } else {
+          const donorQuery = query(
+            collection(store, 'donors'),
+            where('donorId', '==', currentUser.uid)
+          );
+          const donorSnapshot = await getDocs(donorQuery);
+
+          if (!donorSnapshot.empty) {
+            setUserType("donor");
+          }
+        }
+      }
+    };
+
+    fetchUserType();
+  }, []);
 
   return (
     <Box display="flex" justifyContent="space-between" p={2}>
@@ -44,7 +76,13 @@ const Topbar = () => {
         <IconButton>
           <SettingsOutlinedIcon />
         </IconButton>
-        <IconButton  component={Link} to="/profile" title="Profile">
+
+        {/* Conditional Routing Based on User Type */}
+        <IconButton
+          component={Link}
+          to={userType === "donor" ? "/donorprofile" : "/profile"}
+          title="Profile"
+        >
           <PersonOutlinedIcon />
         </IconButton>
       </Box>
