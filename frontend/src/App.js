@@ -26,12 +26,13 @@ import DonorProfile from "./pages/DonorProfile";
 import SignIn from "./pages/signIn";
 
 import Onboarding from "./scenes/onboarding";
-import Donor from "./scenes/donor"
-import Tracking from "./scenes/tracking";
 
 import PastRequests from "./scenes/recipient/PastRequests";
 import MatchNotification from './components/MatchNotification';
 import Matching from "./scenes/matching";
+import Donor from "./scenes/donor"
+import Tracking from "./scenes/tracking";
+
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -73,7 +74,6 @@ function App() {
               <Route path="/pastrequests" element={<PastRequests />} />
               <Route path="/notifications" element={<MatchNotification />} />
               <Route path="/matching" element={<Matching />} />
-
               <Route path="/donor" element={<Donor />} />
 
             </Routes>
