@@ -1,27 +1,5 @@
 import munkres from "munkres-js";
-import { store } from "../firebase/base.js";
-import { getDocs, collection } from "firebase/firestore";
-
-async function getData() {
-  const donationsCollection = collection(store, "donations");
-  const requestsCollection = collection(store, "foodRequests");
-
-  let donations = []; 
-  let requests = [];
-
-  try {
-    const donationsData = await getDocs(donationsCollection);
-    donations = donationsData.docs.map((doc) => doc.data());
-
-    const requestsData = await getDocs(requestsCollection);
-    requests = requestsData.docs.map((doc) => doc.data());
-    
-  } catch (err) {
-    console.error(err);
-  }
-
-  return { donations, requests };
-}
+import { getData, storeMatchData } from "../firebase/match";
 
 // Implement geolocation distance calculation
 function calculateDistance(pickUpAddress, deliveryAddress) {
@@ -101,7 +79,7 @@ export async function findOptimalAssignments() {
   const { donations, requests } = await getData();
   console.log(donations, requests);
 
-  const costMatrix = createCostMatrix(donations, requests);
+  const costMatrix = createCostMatrix(donations.slice(0,8), requests.slice(0,10));
   const result = munkres(costMatrix);
 
   const matches = [];
@@ -110,7 +88,7 @@ export async function findOptimalAssignments() {
     if (requestIndex < requests.length) {
       const donor = donations[donorIndex];
       const request = requests[requestIndex];
-      matches.push({
+       let match = {
         donorId: donor.donorID,
         foodItem: donor.foodItem,
         quantity: donor.quantity,
@@ -123,10 +101,16 @@ export async function findOptimalAssignments() {
         canCook: request.canCook,
         canReheat: request.canReheat,
         hasFridge: request.hasFridge,
-        deliveryAddress: request.deliveryAddress
-      });
+        deliveryAddress: request.deliveryAddress,
+        status: "Match Successful"
+      };
+
+      matches.push(match);
+      storeMatchData(match);
     }
   }
 
   console.log(matches);
+
+  return result
 }

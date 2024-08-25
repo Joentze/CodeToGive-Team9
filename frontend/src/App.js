@@ -25,6 +25,8 @@ import SignIn from './pages/signIn';
 
 import Onboarding from "./scenes/onboarding";
 import Donor from "./scenes/donor"
+import Tracking from "./scenes/tracking";
+
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -50,7 +52,7 @@ function App() {
               <Route path="/pie" element={<Pie />} />
               <Route path="/line" element={<Line />} />
               <Route path="/faq" element={<FAQ />} />
-              <Route path="/calendar" element={<Calendar />} />
+              <Route path="/tracking" element={<Tracking />} />
               <Route path="/geography" element={<Geography />} />
 
               <Route path="/profile" element={<RecipientProfile />} />
