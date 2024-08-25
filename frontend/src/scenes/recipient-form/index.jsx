@@ -286,6 +286,7 @@ const RecipientForm = () => {
                   <MenuItem value="gluten-free">Gluten Free</MenuItem>
                   <MenuItem value="nut-free">Nut Free</MenuItem>
                   <MenuItem value="dairy-free">Dairy Free</MenuItem>
+                  <MenuItem value="halal">Halal</MenuItem>
                   <MenuItem value="others">Others</MenuItem>
                 </Select>
                 {values.dietaryRestrictions.includes("others") && (
@@ -329,8 +330,14 @@ const RecipientForm = () => {
                 >
                   <MenuItem value="vegetarian">Vegetarian</MenuItem>
                   <MenuItem value="fruits">Fruits</MenuItem>
-                  <MenuItem value="halal">Halal</MenuItem>
                   <MenuItem value="seafood">Seafood</MenuItem>
+                  <MenuItem value="rice">Rice</MenuItem>
+                  <MenuItem value="noodle">Noodle</MenuItem>
+                  <MenuItem value="meat">Meat</MenuItem>
+                  <MenuItem value="dessert">Dessert</MenuItem>
+                  <MenuItem value="baked-goods">Baked Goods</MenuItem>
+                  <MenuItem value="snacks">Snacks</MenuItem>
+                  <MenuItem value="beverages">Beverages</MenuItem>
                   <MenuItem value="others">Others</MenuItem>
                 </Select>
                 {values.foodType.includes("others") && (
