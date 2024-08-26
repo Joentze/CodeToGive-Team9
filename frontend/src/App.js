@@ -29,9 +29,10 @@ import Onboarding from "./scenes/onboarding";
 
 import PastRequests from "./scenes/recipient/PastRequests";
 import MatchNotification from './components/MatchNotification';
-import Matching from "./scenes/matching";
+import Matches from "./scenes/matches";
 import Donor from "./scenes/donor"
 import Tracking from "./scenes/tracking";
+
 
 
 function App() {
@@ -70,10 +71,9 @@ function App() {
               <Route path="/donorprofile" element={<DonorProfile />} />
 
               <Route path="/recipient-form" element={<RecipientForm />} />
-
               <Route path="/pastrequests" element={<PastRequests />} />
               <Route path="/notifications" element={<MatchNotification />} />
-              <Route path="/matching" element={<Matching />} />
+              <Route path="/matches" element={<Matches />} />
               <Route path="/donor" element={<Donor />} />
 
             </Routes>

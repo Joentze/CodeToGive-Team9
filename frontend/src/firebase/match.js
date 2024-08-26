@@ -32,7 +32,7 @@ async function getData() {
 
 async function getUnMatchedData() {
   const dq = query(collection(store, "donations"), where("isMatched", "==", false));
-  const rq = query(collection(store, "requests"), where("isMatched", "==", false));
+  const rq = query(collection(store, "foodRequests"), where("isMatched", "==", false));
   
   let donations = [];
   let requests = [];

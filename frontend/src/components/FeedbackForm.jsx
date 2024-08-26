@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { postFeedback } from "../helpers/feedbackHelper";
 import { Button, TextField, Box } from "@mui/material";
-import Textarea from "@mui/joy/Textarea";
 
 // To add in style
 const FeedbackForm = () => {
