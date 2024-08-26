@@ -72,7 +72,6 @@ const MatchDetails = ({ matchData }) => {
         <TextField disabled label="Can Cook" defaultValue={matchData.canCook ? "Yes" : "No"} />
         <TextField disabled label="Can Reheat" defaultValue={matchData.canReheat ? "Yes" : "No"} />
         <TextField disabled label="Has Fridge" defaultValue={matchData.hasFridge ? "Yes" : "No"} />
-        <TextField disabled label="Is Halal" defaultValue={matchData.isHalal ? "Yes" : "No"} />
         <TextField disabled label="Is Perishable" defaultValue={matchData.isPerishable ? "Yes" : "No"} />
         <TextField disabled label="Expiry Date" defaultValue={new Date(matchData.expiryDate.seconds * 1000).toLocaleDateString()} />
         <TextField disabled label="Delivery Address" defaultValue={`Lat: ${matchData.location.latitude}, Long: ${matchData.location.longitude}`} />
