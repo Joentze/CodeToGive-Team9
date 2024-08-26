@@ -75,7 +75,7 @@ const MatchDetails = ({ matchData }) => {
         <TextField disabled label="Is Halal" defaultValue={matchData.isHalal ? "Yes" : "No"} />
         <TextField disabled label="Is Perishable" defaultValue={matchData.isPerishable ? "Yes" : "No"} />
         <TextField disabled label="Expiry Date" defaultValue={new Date(matchData.expiryDate.seconds * 1000).toLocaleDateString()} />
-        <TextField disabled label="Delivery Address" defaultValue={`Lat: ${matchData.deliveryAddress.latitude}, Long: ${matchData.deliveryAddress.longitude}`} />
+        <TextField disabled label="Delivery Address" defaultValue={`Lat: ${matchData.location.latitude}, Long: ${matchData.location.longitude}`} />
         <TextField disabled label="Pick-Up Address" defaultValue={`Lat: ${matchData.pickUpAddress.lat}, Long: ${matchData.pickUpAddress.long}`} />
         <TextField disabled label="Status" defaultValue={matchData.status} />
       </Box>
