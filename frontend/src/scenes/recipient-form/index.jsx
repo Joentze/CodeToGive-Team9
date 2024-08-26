@@ -117,7 +117,7 @@ const RecipientForm = () => {
 
   return (
     <Box m="20px">
-      <Header title="Recipient Page" />
+      <Header title="Create a New Request" />
 
       <Formik
         onSubmit={handleFormSubmit}
@@ -342,7 +342,7 @@ const RecipientForm = () => {
             </Box>
             <Box display="flex" justifyContent="end" mt="20px">
               <Button type="submit" color="secondary" variant="contained">
-                Create New Request
+                Submit
               </Button>
             </Box>
           </form>

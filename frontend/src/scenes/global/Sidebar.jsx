@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ProSidebar, Menu, MenuItem } from "react-pro-sidebar";
+import { ProSidebar, Menu, MenuItem, SubMenu } from "react-pro-sidebar";
 import { Box, IconButton, Typography, useTheme } from "@mui/material";
 import { Link } from "react-router-dom";
 import "react-pro-sidebar/dist/css/styles.css";
@@ -19,6 +19,7 @@ import MapOutlinedIcon from "@mui/icons-material/MapOutlined";
 import FoodBankIcon from "@mui/icons-material/FoodBank";
 import FBSG from "../../data/FBSG.png";
 import VolunteerActivismIcon from "@mui/icons-material/VolunteerActivism";
+import GroupsIcon from '@mui/icons-material/Groups';
 
 const Item = ({ title, to, icon, selected, setSelected }) => {
   const theme = useTheme();
@@ -83,7 +84,7 @@ const Sidebar = () => {
                 ml="15px"
               >
                 <Typography variant="h3" color={colors.grey[100]}>
-                  Food Bank
+      
                 </Typography>
                 <IconButton onClick={() => setIsCollapsed(!isCollapsed)}>
                   <MenuOutlinedIcon />
@@ -110,7 +111,7 @@ const Sidebar = () => {
                   fontWeight="bold"
                   sx={{ m: "10px 0 0 0" }}
                 >
-                  Food Bank
+                  MealMatch
                 </Typography>
                 <Typography variant="h5" color={colors.greenAccent[500]}>
                   Singapore
@@ -206,20 +207,27 @@ const Sidebar = () => {
               selected={selected}
               setSelected={setSelected}
             />
-            <Item
-              title="Admin Dashboard"
-              to="/dashboard"
-              icon={<CalendarTodayOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-            <Item
-              title="All Matches"
-              to="/matches"
-              icon={<HelpOutlineOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
+            <SubMenu
+              title="Admin"
+              icon={<HomeOutlinedIcon />}
+              style={{ color: colors.grey[100] }}
+              defaultOpen 
+            >
+              <Item
+                title="Dashboard"
+                to="/dashboard"
+                icon={<CalendarTodayOutlinedIcon />}
+                selected={selected}
+                setSelected={setSelected}
               />
+              <Item
+                title="All Matches"
+                to="/matches"
+                icon={<GroupsIcon />}
+                selected={selected}
+                setSelected={setSelected}
+                />
+            </SubMenu>
             <Item
               title="Feedback"
               to="/feedback"
