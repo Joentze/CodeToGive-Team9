@@ -120,8 +120,8 @@ export async function findOptimalAssignments() {
 
       matches.push(match);
       storeMatchData(match);
-      updateIsMatched(donor.id, "donations", donor);
-      updateIsMatched(request.id, "foodRequests", request);
+      // updateIsMatched(donor.id, "donations", donor);
+      // updateIsMatched(request.id, "foodRequests", request);
     }
   }
 
