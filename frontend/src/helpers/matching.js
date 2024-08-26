@@ -1,5 +1,5 @@
 import munkres from "munkres-js";
-import { getUnMatchedData, storeMatchData } from "../firebase/match";
+import { getUnMatchedData, storeMatchData, updateIsMatched } from "../firebase/match";
 
 // Implement geolocation distance calculation
 function calculateDistance(pickUpAddress, deliveryAddress) {
@@ -87,7 +87,6 @@ function createCostMatrix(donations, requests) {
 export async function findOptimalAssignments() {
   const { donations, requests } = await getUnMatchedData();
 
-
   const costMatrix = createCostMatrix(
     donations.slice(0,4),
     requests.slice(0,4)
@@ -121,6 +120,8 @@ export async function findOptimalAssignments() {
 
       matches.push(match);
       storeMatchData(match);
+      updateIsMatched(donor.id, "donations", donor);
+      updateIsMatched(request.id, "foodRequests", request);
     }
   }
 

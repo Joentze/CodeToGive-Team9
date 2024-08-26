@@ -1,4 +1,4 @@
-import { doc, getDoc, getDocs, collection, addDoc, query, where } from "firebase/firestore";
+import { doc, getDoc, getDocs, collection, addDoc, query, where, updateDoc } from "firebase/firestore";
 import { store } from "./base.js";
 
 async function storeMatchData(match) {
@@ -39,10 +39,16 @@ async function getUnMatchedData() {
 
   try {
     const donationsData = await getDocs(dq);
-    donations = donationsData.docs.map((doc) => doc.data());
-
+    donations = donationsData.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data()
+    }));
     const requestsData = await getDocs(rq);
-    requests = requestsData.docs.map((doc) => doc.data());
+    requests = requestsData.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data()
+    }));
+
   } catch (error) {
     console.error("Error getting documents: ", error);
   }
@@ -90,5 +96,19 @@ async function getMatchById(matchId) {
   }
 }
 
+async function updateIsMatched(Id, aCollection , data) {
+  try {
+    
+    const matchDocRef = doc(store, aCollection, Id);
 
-export {storeMatchData, getData, getMatchData, getMatchById, getUnMatchedData }
+    data.isMatched = true
+    await updateDoc(matchDocRef, data);
+
+    console.log('Document successfully updated!');
+  } catch (error) {
+    console.error('Error updating document:', error);
+  }
+}
+
+
+export {storeMatchData, getData, getMatchData, getMatchById, getUnMatchedData, updateIsMatched }
