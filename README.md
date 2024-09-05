@@ -1,3 +1,5 @@
+![image](https://github.com/user-attachments/assets/dcea83a0-eb05-42da-b499-56cd4778608f)
+
 # CodeToGive-Team9
 **Mono repository for Morgan Stanley's Code To Give 2024**
 
